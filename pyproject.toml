@@ -1,0 +1,91 @@
+[tool.poetry]
+authors = ["bryan.matteson <bryan.matteson@cbinsights.com>"]
+description = ""
+name = "cbiproto"
+packages = [
+  {include = "cbiproto", from = "src"},
+  {include = "cbiproto_tools", from = "src"},
+]
+version = "1.1.0"
+
+[tool.poetry.dependencies]
+grpclib = "^0.4.2"
+python = "^3.8"
+python-dateutil = "^2.8.2"
+
+[tool.poetry.group.compiler]
+optional = true
+
+[tool.poetry.group.compiler.dependencies]
+Jinja2 = "^3.1.2"
+black = "^22.3.0"
+isort = "^5.10.1"
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+poethepoet = "^0.12.2"
+pytest = "^5.2"
+
+[tool.poetry.group.tools]
+optional = true
+
+[tool.poetry.group.tools.dependencies]
+GitPython = "^3.1.27"
+grpc-stubs = "^1.24.10"
+grpcio-tools = "^1.46.3"
+mypy-protobuf = "^3.2.0"
+
+[tool.poetry.scripts]
+cbiproto-compile = "cbiproto_tools.compile.main:main"
+cbiproto-fetch = "cbiproto_tools.fetch.main:main"
+protoc-gen-python_cbiproto = "cbiproto.plugin:main"
+
+[tool.poetry.extras]
+plugin = ["jinja2", "black", "isort"]
+tools = ["GitPython", "grpc-stubs", "grpcio-tools", "mypy-protobuf"]
+
+[tool.poe]
+include = ["tasks.toml"]
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0"]
+
+[tool.isort]
+ensure_newline_before_comments = true
+force_grid_wrap = 0
+include_trailing_comma = true
+line_length = 120
+multi_line_output = 3
+use_parentheses = true
+
+[tool.pycln]
+all = true
+
+[tool.black]
+include = "\\.(py)$"
+line-length = 120
+target-version = ["py38"]
+
+[tool.mypy]
+disallow_untyped_defs = true
+ignore_missing_imports = true
+show_traceback = true
+
+[tool.pyright]
+exclude = ["**/__pycache__"]
+ignore = []
+include = ["src"]
+typeCheckingMode = "basic"
+
+reportMissingImports = true
+reportMissingTypeStubs = false
+
+pythonPlatform = "All"
+pythonVersion = "3.9"
+
+executionEnvironments = [
+  {root = "src"},
+]

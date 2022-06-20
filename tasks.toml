@@ -1,0 +1,20 @@
+
+[tool.poe.tasks.brew_prefix]
+args = [{name = "package", positional = true}]
+shell = "brew --prefix $package | tr -d '\n'"
+
+[tool.poe.tasks.compile_google_protobuf]
+args = [{name = "header_dir", positional = true, required = true}]
+help = "Regenerate the types in cbiproto.google"
+script = """
+    cbiproto.tools.cbiproto_compile.main:run(
+        output="src/cbiproto/lib",
+        files=[header_dir+"/google/protobuf"],
+        proto_dir=header_dir,
+        options=["INCLUDE_GOOGLE"],
+    )
+"""
+
+[tool.poe.tasks.generate_lib]
+sequence = ["compile_google_protobuf ${PROTOBUF_HEADERS}/include"]
+uses = {PROTOBUF_HEADERS = "brew_prefix protobuf"}
