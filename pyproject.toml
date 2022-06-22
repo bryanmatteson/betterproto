@@ -6,36 +6,25 @@ packages = [
   {include = "cbiproto", from = "src"},
   {include = "cbiproto_tools", from = "src"},
 ]
-version = "1.1.0"
+version = "1.1.1"
 
 [tool.poetry.dependencies]
 grpclib = "^0.4.2"
 python = "^3.8"
 python-dateutil = "^2.8.2"
 
-[tool.poetry.group.compiler]
-optional = true
-
 [tool.poetry.group.compiler.dependencies]
-Jinja2 = "^3.1.2"
-black = "^22.3.0"
-isort = "^5.10.1"
-
-[tool.poetry.group.dev]
-optional = true
+GitPython = {version = "^3.1.27", optional = true}
+Jinja2 = {version = "^3.1.2", optional = true}
+black = {version = "^22.3.0", optional = true}
+grpc-stubs = {version = "^1.24.10", optional = true}
+grpcio-tools = {version = "^1.46.3", optional = true}
+isort = {version = "^5.10.1", optional = true}
+mypy-protobuf = {version = "^3.2.0", optional = true}
 
 [tool.poetry.group.dev.dependencies]
 poethepoet = "^0.12.2"
 pytest = "^5.2"
-
-[tool.poetry.group.tools]
-optional = true
-
-[tool.poetry.group.tools.dependencies]
-GitPython = "^3.1.27"
-grpc-stubs = "^1.24.10"
-grpcio-tools = "^1.46.3"
-mypy-protobuf = "^3.2.0"
 
 [tool.poetry.scripts]
 cbiproto-compile = "cbiproto_tools.compile.main:main"
@@ -43,8 +32,7 @@ cbiproto-fetch = "cbiproto_tools.fetch.main:main"
 protoc-gen-python_cbiproto = "cbiproto.plugin:main"
 
 [tool.poetry.extras]
-plugin = ["jinja2", "black", "isort"]
-tools = ["GitPython", "grpc-stubs", "grpcio-tools", "mypy-protobuf"]
+compiler = ["jinja2", "black", "isort", "GitPython", "grpc-stubs", "grpcio-tools", "mypy-protobuf"]
 
 [tool.poe]
 include = ["tasks.toml"]

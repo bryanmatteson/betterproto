@@ -17,7 +17,7 @@ except ImportError as err:
     print(
         "\033[31m"
         f"Unable to import `{err.name}`!"
-        "Please ensure that you've installed cbiproto with the [tools] extra"
+        "Please ensure that you've installed cbiproto with the [compiler] extra "
         "so that compiler dependencies are included."
         "\033[0m"
     )

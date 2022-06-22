@@ -11,7 +11,7 @@ except ImportError as err:
         "\033[31m"
         f"Unable to import `{err.name}` from cbiproto plugin! "
         "Please ensure that you've installed cbiproto as "
-        '`pip install "cbiproto[plugin]"` so that compiler dependencies '
+        '`pip install "cbiproto[compiler]"` so that compiler dependencies '
         "are included."
         "\033[0m"
     )
