@@ -16,7 +16,7 @@ from typing import {% for i in output_file.typing_imports|sort %}{{ i }}{% if no
 
 import cbiproto
 import grpclib.server
-from cbiproto.grpc.server import ServiceBase
+from cbiproto.runtime.server import ServiceBase
 {% for i in output_file.imports|sort %}
 {{ i }}
 {% endfor %}
