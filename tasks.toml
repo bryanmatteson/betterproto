@@ -5,12 +5,13 @@ shell = "brew --prefix $package | tr -d '\n'"
 
 [tool.poe.tasks.compile_google_protobuf]
 args = [{name = "header_dir", positional = true, required = true}]
-help = "Regenerate the types in cbiproto.google"
+help = "Regenerate the types in cbiproto.lib"
 script = """
-    cbiproto.tools.cbiproto_compile.main:run(
-        output="src/cbiproto/lib",
-        files=[header_dir+"/google/protobuf"],
-        proto_dir=header_dir,
+    cbiproto_tools.compile.main:run(
+        output="cbiproto/lib",
+        files=[header_dir+"/google/protobuf", "cbiproto/protos"],
+        proto_dir="cbiproto/protos",
+        includes=[header_dir],
         options=["INCLUDE_GOOGLE"],
     )
 """
