@@ -142,7 +142,7 @@ def main():
     parser.add_argument("-l", "--legacy", dest="legacy", action="store_true", default=False)
     parser.add_argument("-q", "--quiet", dest="quiet", action="store_true", default=False)
     parser.add_argument("-a", "--async", dest="asynchronous", action="store_true", default=False)
-    parser.add_argument("--include_google", dest="include_google", action="store_true", default=False)
+    parser.add_argument("--include-google", dest="include_google", action="store_true", default=False)
     parser.add_argument("-p", "--proto-dir", dest="proto_dir", required=True)
     parser.add_argument("--option", dest="options", default=[], action="append")
     parser.add_argument("-i", "--include", dest="includes", default=[], action="append")

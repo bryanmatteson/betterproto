@@ -12,9 +12,11 @@ from __future__ import annotations
 
 import warnings
 from dataclasses import dataclass
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import cbiproto
+
+from ...cbi.protobuf import service as __cbi_protobuf_service__
 
 
 class Syntax(cbiproto.Enum):
@@ -1807,7 +1809,7 @@ class ServiceOptions(cbiproto.Message):
     uninterpreted_option: List["UninterpretedOption"] = cbiproto.message_field(999)
     """The parser stores options it doesn't recognize here. See above."""
 
-    internal: bool = cbiproto.bool_field(1000)
+    options: Optional["__cbi_protobuf_service__.ServiceOptions"] = cbiproto.message_field(1000, optional=True)
 
 
 @dataclass(eq=False, repr=False)

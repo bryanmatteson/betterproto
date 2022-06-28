@@ -4,6 +4,10 @@ package cbi.protobuf.service;
 
 import "google/protobuf/descriptor.proto";
 
+message ServiceOptions {
+    bool internal = 1;
+}
+
 extend google.protobuf.ServiceOptions {
-    bool internal = 1000;
+    optional ServiceOptions options = 1000;
 }

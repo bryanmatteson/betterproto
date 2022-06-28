@@ -13,7 +13,7 @@ service TestService {
 }
 
 service InternalTestService {
-    option (cbi.protobuf.service.internal) = true;
+    option (cbi.protobuf.service.options) = { internal: true };
 
     rpc SayHello (Request) returns (Response) {}
 }
