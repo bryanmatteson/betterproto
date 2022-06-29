@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import threading
 from abc import ABC
 from concurrent import futures
 from dataclasses import dataclass
@@ -7,9 +8,14 @@ from pathlib import Path
 from typing import Collection, Dict, Optional
 
 import grpc
+import grpc.aio
 from typing_extensions import assert_never
 
 from .types import Cardinality, Handler, IServable
+
+
+class ServiceBase(ABC):
+    pass
 
 
 @dataclass
@@ -26,7 +32,7 @@ class Server:
     _max_workers: int
 
     def __init__(
-        self, handlers: Collection[IServable], *, max_workers: int = 10, tls_config: Optional[TLSConfig] = None,
+        self, handlers: Collection[IServable], *, max_workers: int = 10, tls_config: Optional[TLSConfig] = None
     ) -> None:
         self._mapping = {}
         self._max_workers = max_workers
@@ -48,19 +54,27 @@ class Server:
 
             if handler.cardinality == Cardinality.UNARY_UNARY:
                 rpc_method = grpc.unary_unary_rpc_method_handler(
-                    handler.func, request_deserializer=handler.request_type.parse_raw, response_serializer=bytes,
+                    handler.func,
+                    request_deserializer=handler.request_type.parse_raw,
+                    response_serializer=handler.reply_type.__bytes__,
                 )
             elif handler.cardinality == Cardinality.UNARY_STREAM:
                 rpc_method = grpc.unary_stream_rpc_method_handler(
-                    handler.func, request_deserializer=handler.request_type.parse_raw, response_serializer=bytes,
+                    handler.func,
+                    request_deserializer=handler.request_type.parse_raw,
+                    response_serializer=handler.reply_type.__bytes__,
                 )
             elif handler.cardinality == Cardinality.STREAM_UNARY:
                 rpc_method = grpc.stream_unary_rpc_method_handler(
-                    handler.func, request_deserializer=handler.request_type.parse_raw, response_serializer=bytes,
+                    handler.func,
+                    request_deserializer=handler.request_type.parse_raw,
+                    response_serializer=handler.reply_type.__bytes__,
                 )
             elif handler.cardinality == Cardinality.STREAM_STREAM:
                 rpc_method = grpc.stream_stream_rpc_method_handler(
-                    handler.func, request_deserializer=handler.request_type.parse_raw, response_serializer=bytes,
+                    handler.func,
+                    request_deserializer=handler.request_type.parse_raw,
+                    response_serializer=handler.reply_type.__bytes__,
                 )
             else:
                 assert_never(handler.cardinality)
@@ -90,18 +104,12 @@ class Server:
 
         self._server.start()
 
-    def close(self, wait_until_termination: bool = True, grace_period: Optional[float] = None) -> None:
+    def close(self, grace_period: Optional[float] = None) -> threading.Event:
         if self._server is None:
             raise RuntimeError("Server is not started")
-        evt = self._server.stop(grace_period)
-        if wait_until_termination:
-            evt.wait()
+        return self._server.stop(grace_period)
 
-    def wait_closed(self) -> None:
+    def wait_closed(self) -> bool:
         if self._server is None:
             raise RuntimeError("Server is not started")
-        self._server.wait_for_termination()
-
-
-class ServiceBase(ABC):
-    pass
+        return self._server.wait_for_termination()

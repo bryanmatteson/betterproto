@@ -36,11 +36,10 @@ from typing import (
 from dateutil.parser import isoparse
 from typing_extensions import Self
 
-from cbiproto.runtime import AsyncServiceStub, ServiceStub
-
-from . import runtime
+from . import aio
 from ._casing import camel_case, pascal_case, safe_snake_case, snake_case
 from ._types import UNSET
+from .client import ServiceStub
 from .const import (
     DATETIME_ZERO,
     FIXED_TYPES,
@@ -99,6 +98,9 @@ from .fields import (
     uint32_field,
     uint64_field,
 )
+from .server import Server, ServiceBase, TLSConfig
+from .types import Cardinality, Handler, IServable
+from .utils import graceful_exit
 
 Casing = Literal["camel", "snake", "pascal"]
 
@@ -342,6 +344,11 @@ class ProtoClassMetadata:
         self.sorted_field_names = tuple(by_field_number[number] for number in sorted(by_field_number))
         self.default_gen = {field.name: _get_field_default_gen(cls, field) for field in fields}
         self.cls_by_field = _get_cls_by_field(cls, fields)
+
+    def get_field_number(self, field_name: str) -> int:
+        if field_name not in self.meta_by_field_name:
+            raise ValueError(f"Unknown field {field_name}")
+        return self.meta_by_field_name[field_name].number
 
     def get_field_default(self, field_name: str) -> Any:
         with warnings.catch_warnings():
@@ -1188,7 +1195,6 @@ def _get_wrapper(proto_type: str) -> Type:
 
 __all__ = [
     "Message",
-    "MessageT",
     "Enum",
     "FieldMetadata",
     "proto_field",
@@ -1211,6 +1217,12 @@ __all__ = [
     "message_field",
     "map_field",
     "ServiceStub",
-    "AsyncServiceStub",
-    "runtime",
+    "aio",
+    "ServiceBase",
+    "Server",
+    "TLSConfig",
+    "Handler",
+    "Cardinality",
+    "IServable",
+    "graceful_exit",
 ]

@@ -5,15 +5,15 @@ name = "cbiproto"
 packages = [
   {include = "cbiproto"},
   {include = "cbiproto_tools"},
+  {include = "grpc-stubs"},
 ]
 version = "0.0.1"
 
 [tool.poetry.dependencies]
 GitPython = {version = "^3.1.27", optional = true}
-Jinja2 = {version = "^3.1.2", optional = true}
 black = {version = "^19.10b0", optional = true}
-cbisyncer = {path = "../cbisyncer", develop = true}
 grpc-stubs = {version = "^1.24.10", optional = true}
+grpcio = "^1.47.0"
 grpcio-tools = {extras = ["protobuf"], version = "^1.46.0", optional = true}
 grpclib = "^0.4.2"
 isort = {version = "^5.10.1", optional = true}
@@ -32,7 +32,7 @@ cbiproto-fetch = "cbiproto_tools.fetch.main:main"
 protoc-gen-python_cbiproto = "cbiproto.plugin:main"
 
 [tool.poetry.extras]
-compiler = ["jinja2", "black", "isort", "GitPython", "grpc-stubs", "grpcio-tools", "mypy-protobuf"]
+compiler = ["black", "isort", "GitPython", "grpc-stubs", "grpcio-tools", "mypy-protobuf"]
 
 [tool.poe]
 include = ["tasks.toml"]
@@ -66,6 +66,7 @@ show_traceback = true
 exclude = ["**/__pycache__"]
 ignore = []
 include = ["src"]
+stubPath = "./typings"
 typeCheckingMode = "basic"
 
 reportMissingImports = true

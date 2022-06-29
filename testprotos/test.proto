@@ -20,8 +20,10 @@ service InternalTestService {
 
 message Request {
     string id = 1;
+    map<string, string> metadata = 2;
 }
 
 message Response {
     string id = 1;
+    map<int32, bool> test = 2;
 }
