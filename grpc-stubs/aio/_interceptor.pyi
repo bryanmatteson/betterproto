@@ -8,6 +8,7 @@ from ._call import (
     UnaryStreamCall as UnaryStreamCall,
     UnaryUnaryCall as UnaryUnaryCall,
 )
+from ._channel import Channel
 from ._metadata import Metadata as Metadata
 from ._typing import (
     DeserializingFunction as DeserializingFunction,
@@ -21,7 +22,6 @@ from ._typing import (
 from _typeshed import Incomplete
 from abc import ABCMeta, abstractmethod
 from collections.abc import Generator
-from grpc._cython import cygrpc as cygrpc
 from typing import Any, AsyncIterable, Awaitable, Callable, Optional, Sequence, Union
 
 class ServerInterceptor(metaclass=ABCMeta):
@@ -110,7 +110,7 @@ class InterceptedUnaryUnaryCall(
         metadata: Metadata,
         credentials: Optional[grpc.CallCredentials],
         wait_for_ready: Optional[bool],
-        channel: cygrpc.AioChannel,
+        channel: Channel,
         method: bytes,
         request_serializer: SerializingFunction,
         response_deserializer: DeserializingFunction,
@@ -129,7 +129,7 @@ class InterceptedUnaryStreamCall(
         metadata: Metadata,
         credentials: Optional[grpc.CallCredentials],
         wait_for_ready: Optional[bool],
-        channel: cygrpc.AioChannel,
+        channel: Channel,
         method: bytes,
         request_serializer: SerializingFunction,
         response_deserializer: DeserializingFunction,
@@ -138,7 +138,9 @@ class InterceptedUnaryStreamCall(
     def time_remaining(self) -> Optional[float]: ...
 
 class InterceptedStreamUnaryCall(
-    _InterceptedUnaryResponseMixin, InterceptedCall, _base_call.StreamUnaryCall[RequestType, ResponseType],
+    _InterceptedUnaryResponseMixin,
+    InterceptedCall,
+    _base_call.StreamUnaryCall[RequestType, ResponseType],
 ):
     def __init__(
         self,
@@ -148,7 +150,7 @@ class InterceptedStreamUnaryCall(
         metadata: Metadata,
         credentials: Optional[grpc.CallCredentials],
         wait_for_ready: Optional[bool],
-        channel: cygrpc.AioChannel,
+        channel: Channel,
         method: bytes,
         request_serializer: SerializingFunction,
         response_deserializer: DeserializingFunction,
@@ -159,7 +161,9 @@ class InterceptedStreamUnaryCall(
     async def done_writing(self) -> None: ...
 
 class InterceptedStreamStreamCall(
-    _InterceptedStreamResponseMixin, InterceptedCall, _base_call.StreamStreamCall[RequestType, ResponseType],
+    _InterceptedStreamResponseMixin,
+    InterceptedCall,
+    _base_call.StreamStreamCall[RequestType, ResponseType],
 ):
     def __init__(
         self,
@@ -169,7 +173,7 @@ class InterceptedStreamStreamCall(
         metadata: Metadata,
         credentials: Optional[grpc.CallCredentials],
         wait_for_ready: Optional[bool],
-        channel: cygrpc.AioChannel,
+        channel: Channel,
         method: bytes,
         request_serializer: SerializingFunction,
         response_deserializer: DeserializingFunction,

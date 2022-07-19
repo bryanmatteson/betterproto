@@ -3,7 +3,6 @@ from . import _base_server
 from ._interceptor import ServerInterceptor as ServerInterceptor
 from ._typing import ChannelArgumentType as ChannelArgumentType
 from concurrent.futures import Executor
-from grpc._cython import cygrpc as cygrpc
 from typing import Any, Optional, Sequence
 
 class Server(_base_server.Server):

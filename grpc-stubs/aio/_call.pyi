@@ -1,6 +1,7 @@
 import asyncio
 import enum
 import grpc
+from ._channel import Channel
 from . import _base_call
 from ._metadata import Metadata
 from ._typing import (
@@ -11,8 +12,7 @@ from ._typing import (
     ResponseType,
     SerializingFunction,
 )
-from grpc._cython import cygrpc
-from typing import AsyncIterable, Optional
+from typing import Any, AsyncIterable, Optional
 
 class AioRpcError(grpc.RpcError):
     def __init__(
@@ -32,7 +32,7 @@ class AioRpcError(grpc.RpcError):
 class Call:
     def __init__(
         self,
-        cython_call: cygrpc._AioCall,
+        cython_call: Any,
         metadata: Metadata,
         request_serializer: SerializingFunction,
         response_deserializer: DeserializingFunction,
@@ -63,7 +63,7 @@ class UnaryUnaryCall(Call, _base_call.UnaryUnaryCall[RequestType, ResponseType])
         metadata: Metadata,
         credentials: Optional[grpc.CallCredentials],
         wait_for_ready: Optional[bool],
-        channel: cygrpc.AioChannel,
+        channel: Channel,
         method: bytes,
         request_serializer: SerializingFunction,
         response_deserializer: DeserializingFunction,
@@ -81,7 +81,7 @@ class UnaryStreamCall(Call, _base_call.UnaryStreamCall[RequestType, ResponseType
         metadata: Metadata,
         credentials: Optional[grpc.CallCredentials],
         wait_for_ready: Optional[bool],
-        channel: cygrpc.AioChannel,
+        channel: Channel,
         method: bytes,
         request_serializer: SerializingFunction,
         response_deserializer: DeserializingFunction,
@@ -100,7 +100,7 @@ class StreamUnaryCall(Call, _base_call.StreamUnaryCall[RequestType, ResponseType
         metadata: Metadata,
         credentials: Optional[grpc.CallCredentials],
         wait_for_ready: Optional[bool],
-        channel: cygrpc.AioChannel,
+        channel: Channel,
         method: bytes,
         request_serializer: SerializingFunction,
         response_deserializer: DeserializingFunction,
@@ -120,7 +120,7 @@ class StreamStreamCall(Call, _base_call.StreamStreamCall[RequestType, ResponseTy
         metadata: Metadata,
         credentials: Optional[grpc.CallCredentials],
         wait_for_ready: Optional[bool],
-        channel: cygrpc.AioChannel,
+        channel: Channel,
         method: bytes,
         request_serializer: SerializingFunction,
         response_deserializer: DeserializingFunction,

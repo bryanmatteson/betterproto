@@ -28,12 +28,3 @@ from ._interceptor import (
 )
 from ._metadata import Metadata as Metadata
 from ._server import server as server
-from grpc._cython.cygrpc import (
-    AbortError as AbortError,
-    BaseError as BaseError,
-    EOF as EOF,
-    InternalError as InternalError,
-    UsageError as UsageError,
-    init_grpc_aio as init_grpc_aio,
-    shutdown_grpc_aio as shutdown_grpc_aio,
-)

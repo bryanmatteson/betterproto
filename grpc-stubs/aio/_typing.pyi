@@ -1,6 +1,5 @@
 from ._metadata import Metadata as Metadata, MetadataKey as MetadataKey, MetadataValue as MetadataValue
 from _typeshed import Incomplete
-from grpc._cython.cygrpc import EOF as EOF
 from typing import Any, AsyncIterable, Callable, Iterable, Sequence, Tuple, TypeVar, Union
 
 RequestType = TypeVar("RequestType")

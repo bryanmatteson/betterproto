@@ -1,3 +1,4 @@
+import asyncio
 from abc import ABC
 from concurrent import futures
 from pathlib import Path
@@ -93,10 +94,16 @@ class Server:
 
         return self._server.start()
 
-    def close(self, *, grace_period: Optional[float] = None) -> Coroutine[Any, Any, None]:
+    def aclose(self, *, grace_period: Optional[float] = None) -> Coroutine[Any, Any, None]:
         if self._server is None:
             raise RuntimeError("Server is not started")
         return self._server.stop(grace_period)
+
+    def close(self, *, grace_period: Optional[float] = None) -> None:
+        if self._server is None:
+            raise RuntimeError("Server is not started")
+        task = asyncio.run_coroutine_threadsafe(self.aclose(grace_period=grace_period), loop=asyncio.get_event_loop())
+        return task.result()
 
     def wait_closed(self, *, timeout: Optional[float] = None) -> Coroutine[Any, Any, bool]:
         if self._server is None:

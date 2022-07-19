@@ -25,13 +25,12 @@ from ._typing import (
     RequestIterableType as RequestIterableType,
     SerializingFunction as SerializingFunction,
 )
-from grpc._cython import cygrpc as cygrpc
 from typing import Any, Optional, Sequence
 
 class _BaseMultiCallable:
     def __init__(
         self,
-        channel: cygrpc.AioChannel,
+        channel: Channel,
         method: bytes,
         request_serializer: SerializingFunction,
         response_deserializer: DeserializingFunction,

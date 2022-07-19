@@ -5,7 +5,7 @@
 # pyright: ignore
 # mypy: ignore-errors
 # fmt: off
-# plugin: python-cbiproto
+# plugin: python-cbproto
 # sources: google/protobuf/any.proto, google/protobuf/api.proto, google/protobuf/descriptor.proto, google/protobuf/duration.proto, google/protobuf/empty.proto, google/protobuf/field_mask.proto, google/protobuf/source_context.proto, google/protobuf/struct.proto, google/protobuf/timestamp.proto, google/protobuf/type.proto, google/protobuf/wrappers.proto
 
 from __future__ import annotations
@@ -14,12 +14,12 @@ import warnings
 from dataclasses import dataclass
 from typing import Dict, List, Optional
 
-import cbiproto
+import cbproto
 
 from ...cbi.protobuf import service as __cbi_protobuf_service__
 
 
-class Syntax(cbiproto.Enum):
+class Syntax(cbproto.Enum):
     """The syntax in which a protocol buffer element is defined."""
 
     SYNTAX_PROTO2 = 0
@@ -29,11 +29,11 @@ class Syntax(cbiproto.Enum):
     """Syntax `proto3`."""
 
 
-class NullValue(cbiproto.Enum):
+class NullValue(cbproto.Enum):
     """
     `NullValue` is a singleton enumeration to represent the null value for the
     `Value` type union.
-    
+
     The JSON representation for `NullValue` is JSON `null`.
     """
 
@@ -42,75 +42,75 @@ class NullValue(cbiproto.Enum):
 
 
 @dataclass(eq=False, repr=False)
-class Timestamp(cbiproto.Message):
+class Timestamp(cbproto.Message):
     """
     A Timestamp represents a point in time independent of any time zone or local
     calendar, encoded as a count of seconds and fractions of seconds at
     nanosecond resolution. The count is relative to an epoch at UTC midnight on
     January 1, 1970, in the proleptic Gregorian calendar which extends the
     Gregorian calendar backwards to year one.
-    
+
     All minutes are 60 seconds long. Leap seconds are "smeared" so that no leap
     second table is needed for interpretation, using a [24-hour linear
     smear](https://developers.google.com/time/smear).
-    
+
     The range is from 0001-01-01T00:00:00Z to 9999-12-31T23:59:59.999999999Z. By
     restricting to that range, we ensure that we can convert to and from [RFC
     3339](https://www.ietf.org/rfc/rfc3339.txt) date strings.
-    
+
     # Examples
-    
+
     Example 1: Compute Timestamp from POSIX `time()`.
-    
+
         Timestamp timestamp;
         timestamp.set_seconds(time(NULL));
         timestamp.set_nanos(0);
-    
+
     Example 2: Compute Timestamp from POSIX `gettimeofday()`.
-    
+
         struct timeval tv;
         gettimeofday(&tv, NULL);
-    
+
         Timestamp timestamp;
         timestamp.set_seconds(tv.tv_sec);
         timestamp.set_nanos(tv.tv_usec * 1000);
-    
+
     Example 3: Compute Timestamp from Win32 `GetSystemTimeAsFileTime()`.
-    
+
         FILETIME ft;
         GetSystemTimeAsFileTime(&ft);
         UINT64 ticks = (((UINT64)ft.dwHighDateTime) << 32) | ft.dwLowDateTime;
-    
+
         // A Windows tick is 100 nanoseconds. Windows epoch 1601-01-01T00:00:00Z
         // is 11644473600 seconds before Unix epoch 1970-01-01T00:00:00Z.
         Timestamp timestamp;
         timestamp.set_seconds((INT64) ((ticks / 10000000) - 11644473600LL));
         timestamp.set_nanos((INT32) ((ticks % 10000000) * 100));
-    
+
     Example 4: Compute Timestamp from Java `System.currentTimeMillis()`.
-    
+
         long millis = System.currentTimeMillis();
-    
+
         Timestamp timestamp = Timestamp.newBuilder().setSeconds(millis / 1000)
             .setNanos((int) ((millis % 1000) * 1000000)).build();
-    
-    
+
+
     Example 5: Compute Timestamp from Java `Instant.now()`.
-    
+
         Instant now = Instant.now();
-    
+
         Timestamp timestamp =
             Timestamp.newBuilder().setSeconds(now.getEpochSecond())
                 .setNanos(now.getNano()).build();
-    
-    
+
+
     Example 6: Compute Timestamp from current time in Python.
-    
+
         timestamp = Timestamp()
         timestamp.GetCurrentTime()
-    
+
     # JSON Mapping
-    
+
     In JSON format, the Timestamp type is encoded as a string in the
     [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format. That is, the
     format is "{year}-{month}-{day}T{hour}:{min}:{sec}[.{frac_sec}]Z"
@@ -121,10 +121,10 @@ class Timestamp(cbiproto.Message):
     is required. A proto3 JSON serializer should always use UTC (as indicated by
     "Z") when printing the Timestamp type and a proto3 JSON parser should be
     able to accept both UTC and other timezones (as indicated by an offset).
-    
+
     For example, "2017-01-15T01:30:15.01Z" encodes 15.01 seconds past
     01:30 UTC on January 15, 2017.
-    
+
     In JavaScript, one can convert a Date object to this format using the
     standard
     [toISOString()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString)
@@ -137,14 +137,14 @@ class Timestamp(cbiproto.Message):
     ) to obtain a formatter capable of generating timestamps in this format.
     """
 
-    seconds: int = cbiproto.int64_field(1)
+    seconds: int = cbproto.int64_field(1)
     """
     Represents seconds of UTC time since Unix epoch
     1970-01-01T00:00:00Z. Must be from 0001-01-01T00:00:00Z to
     9999-12-31T23:59:59Z inclusive.
     """
 
-    nanos: int = cbiproto.int32_field(2)
+    nanos: int = cbproto.int32_field(2)
     """
     Non-negative fractions of a second at nanosecond resolution. Negative
     second values with fractions must still have non-negative nanos values
@@ -154,28 +154,28 @@ class Timestamp(cbiproto.Message):
 
 
 @dataclass(eq=False, repr=False)
-class FieldMask(cbiproto.Message):
+class FieldMask(cbproto.Message):
     """
     `FieldMask` represents a set of symbolic field paths, for example:
-    
+
         paths: "f.a"
         paths: "f.b.d"
-    
+
     Here `f` represents a field in some root message, `a` and `b`
     fields in the message found in `f`, and `d` a field found in the
     message in `f.b`.
-    
+
     Field masks are used to specify a subset of fields that should be
     returned by a get operation or modified by an update operation.
     Field masks also have a custom JSON encoding (see below).
-    
+
     # Field Masks in Projections
-    
+
     When used in the context of a projection, a response message or
     sub-message is filtered by the API to only contain those fields as
     specified in the mask. For example, if the mask in the previous
     example is applied to a response message as follows:
-    
+
         f {
         a : 22
         b {
@@ -185,26 +185,26 @@ class FieldMask(cbiproto.Message):
         y : 13
         }
         z: 8
-    
+
     The result will not contain specific values for fields x,y and z
     (their value will be set to the default, and omitted in proto text
     output):
-    
-    
+
+
         f {
         a : 22
         b {
             d : 1
         }
         }
-    
+
     A repeated field is not allowed except at the last position of a
     paths string.
-    
+
     If a FieldMask object is not present in a get operation, the
     operation applies to all fields (as if a FieldMask of all fields
     had been specified).
-    
+
     Note that a field mask does not necessarily apply to the
     top-level response message. In case of a REST get operation, the
     field mask applies directly to the response, but in case of a REST
@@ -214,26 +214,26 @@ class FieldMask(cbiproto.Message):
     clearly documented together with its declaration in the API.  In
     any case, the effect on the returned resource/resources is required
     behavior for APIs.
-    
+
     # Field Masks in Update Operations
-    
+
     A field mask in update operations specifies which fields of the
     targeted resource are going to be updated. The API is required
     to only change the values of the fields as specified in the mask
     and leave the others untouched. If a resource is passed in to
     describe the updated values, the API ignores the values of all
     fields not covered by the mask.
-    
+
     If a repeated field is specified for an update operation, new values will
     be appended to the existing repeated field in the target resource. Note that
     a repeated field is only allowed in the last position of a `paths` string.
-    
+
     If a sub-message is specified in the last position of the field mask for an
     update operation, then new value will be merged into the existing sub-message
     in the target resource.
-    
+
     For example, given the target message:
-    
+
         f {
         b {
             d: 1
@@ -241,22 +241,22 @@ class FieldMask(cbiproto.Message):
         }
         c: [1]
         }
-    
+
     And an update message:
-    
+
         f {
         b {
             d: 10
         }
         c: [2]
         }
-    
+
     then if the field mask is:
-    
+
     paths: ["f.b", "f.c"]
-    
+
     then the result will be:
-    
+
         f {
         b {
             d: 10
@@ -264,16 +264,16 @@ class FieldMask(cbiproto.Message):
         }
         c: [1, 2]
         }
-    
+
     An implementation may provide options to override this default behavior for
     repeated and message fields.
-    
+
     In order to reset a field's value to the default, the field must
     be in the mask and set to the default value in the provided resource.
     Hence, in order to reset all fields of a resource, provide a default
     instance of the resource and set all fields in the mask, or do
     not provide a mask as described below.
-    
+
     If a field mask is not present on update, the operation applies to
     all fields (as if a field mask of all fields has been specified).
     Note that in the presence of schema evolution, this may mean that
@@ -281,26 +281,26 @@ class FieldMask(cbiproto.Message):
     the request will be reset to their default. If this is unwanted
     behavior, a specific service may require a client to always specify
     a field mask, producing an error if not.
-    
+
     As with get operations, the location of the resource which
     describes the updated values in the request message depends on the
     operation kind. In any case, the effect of the field mask is
     required to be honored by the API.
-    
+
     ## Considerations for HTTP REST
-    
+
     The HTTP kind of an update operation which uses a field mask must
     be set to PATCH instead of PUT in order to satisfy HTTP semantics
     (PUT must only be used for full updates).
-    
+
     # JSON Encoding of Field Masks
-    
+
     In JSON, a field mask is encoded as a single string where paths are
     separated by a comma. Fields name in each path are converted
     to/from lower-camel naming conventions.
-    
+
     As an example, consider the following message declarations:
-    
+
         message Profile {
         User user = 1;
         Photo photo = 2;
@@ -309,66 +309,66 @@ class FieldMask(cbiproto.Message):
         string display_name = 1;
         string address = 2;
         }
-    
+
     In proto a field mask for `Profile` may look as such:
-    
+
         mask {
         paths: "user.display_name"
         paths: "photo"
         }
-    
+
     In JSON, the same mask is represented as below:
-    
+
         {
         mask: "user.displayName,photo"
         }
-    
+
     # Field Masks and Oneof Fields
-    
+
     Field masks treat fields in oneofs just as regular fields. Consider the
     following message:
-    
+
         message SampleMessage {
         oneof test_oneof {
             string name = 4;
             SubMessage sub_message = 9;
         }
         }
-    
+
     The field mask can be:
-    
+
         mask {
         paths: "name"
         }
-    
+
     Or:
-    
+
         mask {
         paths: "sub_message"
         }
-    
+
     Note that oneof type names ("test_oneof" in this case) cannot be used in
     paths.
-    
+
     ## Field Mask Verification
-    
+
     The implementation of any API method which has a FieldMask type field in the
     request should verify the included field paths, and return an
     `INVALID_ARGUMENT` error if any path is unmappable.
     """
 
-    paths: List[str] = cbiproto.string_field(1)
+    paths: List[str] = cbproto.string_field(1)
     """The set of field mask paths."""
 
 
 @dataclass(eq=False, repr=False)
-class SourceContext(cbiproto.Message):
+class SourceContext(cbproto.Message):
     """
     `SourceContext` represents information about the source of a
     protobuf element, like the file in which it is defined.
     """
 
-    file_name: str = cbiproto.string_field(1)
+    file_name: str = cbproto.string_field(1)
     """
     The path-qualified name of the .proto file that contained the associated
     protobuf element.  For example: `"google/protobuf/source_context.proto"`.
@@ -376,16 +376,16 @@ class SourceContext(cbiproto.Message):
 
 
 @dataclass(eq=False, repr=False)
-class Any(cbiproto.Message):
+class Any(cbproto.Message):
     """
     `Any` contains an arbitrary serialized protocol buffer message along with a
     URL that describes the type of the serialized message.
-    
+
     Protobuf library provides support to pack/unpack Any values in the form
     of utility functions or additional generated methods of the Any type.
-    
+
     Example 1: Pack and unpack a message in C++.
-    
+
         Foo foo = ...;
         Any any;
         any.PackFrom(foo);
@@ -393,18 +393,18 @@ class Any(cbiproto.Message):
         if (any.UnpackTo(&foo)) {
         ...
         }
-    
+
     Example 2: Pack and unpack a message in Java.
-    
+
         Foo foo = ...;
         Any any = Any.pack(foo);
         ...
         if (any.is(Foo.class)) {
         foo = any.unpack(Foo.class);
         }
-    
+
     Example 3: Pack and unpack a message in Python.
-    
+
         foo = Foo(...)
         any = Any()
         any.Pack(foo)
@@ -412,9 +412,9 @@ class Any(cbiproto.Message):
         if any.Is(Foo.DESCRIPTOR):
         any.Unpack(foo)
         ...
-    
+
     Example 4: Pack and unpack a message in Go
-    
+
         foo := &pb.Foo{...}
         any, err := anypb.New(foo)
         if err != nil {
@@ -425,44 +425,44 @@ class Any(cbiproto.Message):
         if err := any.UnmarshalTo(foo); err != nil {
             ...
         }
-    
+
     The pack methods provided by protobuf library will by default use
     'type.googleapis.com/full.type.name' as the type URL and the unpack
     methods only use the fully qualified type name after the last '/'
     in the type URL, for example "foo.bar.com/x/y.z" will yield type
     name "y.z".
-    
-    
+
+
     JSON
     ====
     The JSON representation of an `Any` value uses the regular
     representation of the deserialized, embedded message, with an
     additional field `@type` which contains the type URL. Example:
-    
+
         package google.profile;
         message Person {
         string first_name = 1;
         string last_name = 2;
         }
-    
+
         {
         "@type": "type.googleapis.com/google.profile.Person",
         "firstName": <string>,
         "lastName": <string>
         }
-    
+
     If the embedded message type is well-known and has a custom JSON
     representation, that representation will be embedded adding a field
     `value` which holds the custom JSON in addition to the `@type`
     field. Example (for message [google.protobuf.Duration][]):
-    
+
         {
         "@type": "type.googleapis.com/google.protobuf.Duration",
         "value": "1.212s"
         }
     """
 
-    type_url: str = cbiproto.string_field(1)
+    type_url: str = cbproto.string_field(1)
     """
     A URL/resource name that uniquely identifies the type of the serialized
     protocol buffer message. This string must contain at least
@@ -470,12 +470,12 @@ class Any(cbiproto.Message):
     the fully qualified name of the type (as in
     `path/google.protobuf.Duration`). The name should be in a canonical form
     (e.g., leading "." is not accepted).
-    
+
     In practice, teams usually precompile into the binary all types that they
     expect it to use in the context of Any. However, for URLs which use the
     scheme `http`, `https`, or no scheme, one can optionally set up a type
     server that maps type URLs to message definitions as follows:
-    
+
     * If no scheme is provided, `https` is assumed.
     * An HTTP GET on the URL must yield a [google.protobuf.Type][]
     value in binary format, or produce an error.
@@ -484,83 +484,83 @@ class Any(cbiproto.Message):
     lookup. Therefore, binary compatibility needs to be preserved
     on changes to types. (Use versioned type names to manage
     breaking changes.)
-    
+
     Note: this functionality is not currently available in the official
     protobuf release, and it is not used for type URLs beginning with
     type.googleapis.com.
-    
+
     Schemes other than `http`, `https` (or the empty scheme) might be
     used with implementation specific semantics.
     """
 
-    value: bytes = cbiproto.bytes_field(2)
+    value: bytes = cbproto.bytes_field(2)
     """Must be a valid serialized protocol buffer of the above specified type."""
 
 
 @dataclass(eq=False, repr=False)
-class Type(cbiproto.Message):
+class Type(cbproto.Message):
     """A protocol buffer message type."""
 
-    name: str = cbiproto.string_field(1)
+    name: str = cbproto.string_field(1)
     """The fully qualified message name."""
 
-    fields: List["Field"] = cbiproto.message_field(2)
+    fields: List["Field"] = cbproto.message_field(2)
     """The list of fields."""
 
-    oneofs: List[str] = cbiproto.string_field(3)
+    oneofs: List[str] = cbproto.string_field(3)
     """The list of types appearing in `oneof` definitions in this type."""
 
-    options: List["Option"] = cbiproto.message_field(4)
+    options: List["Option"] = cbproto.message_field(4)
     """The protocol buffer options."""
 
-    source_context: "SourceContext" = cbiproto.message_field(5)
+    source_context: "SourceContext" = cbproto.message_field(5)
     """The source context."""
 
-    syntax: "Syntax" = cbiproto.enum_field(6)
+    syntax: "Syntax" = cbproto.enum_field(6)
     """The source syntax."""
 
 
 @dataclass(eq=False, repr=False)
-class Field(cbiproto.Message):
+class Field(cbproto.Message):
     """A single field of a message type."""
 
-    kind: "Field.Kind" = cbiproto.enum_field(1)
+    kind: "Field.Kind" = cbproto.enum_field(1)
     """The field type."""
 
-    cardinality: "Field.Cardinality" = cbiproto.enum_field(2)
+    cardinality: "Field.Cardinality" = cbproto.enum_field(2)
     """The field cardinality."""
 
-    number: int = cbiproto.int32_field(3)
+    number: int = cbproto.int32_field(3)
     """The field number."""
 
-    name: str = cbiproto.string_field(4)
+    name: str = cbproto.string_field(4)
     """The field name."""
 
-    type_url: str = cbiproto.string_field(6)
+    type_url: str = cbproto.string_field(6)
     """
     The field type URL, without the scheme, for message or enumeration
     types. Example: `"type.googleapis.com/google.protobuf.Timestamp"`.
     """
 
-    oneof_index: int = cbiproto.int32_field(7)
+    oneof_index: int = cbproto.int32_field(7)
     """
     The index of the field type in `Type.oneofs`, for message or enumeration
     types. The first type has index 1; zero means the type is not in the list.
     """
 
-    packed: bool = cbiproto.bool_field(8)
+    packed: bool = cbproto.bool_field(8)
     """Whether to use alternative packed wire representation."""
 
-    options: List["Option"] = cbiproto.message_field(9)
+    options: List["Option"] = cbproto.message_field(9)
     """The protocol buffer options."""
 
-    json_name: str = cbiproto.string_field(10)
+    json_name: str = cbproto.string_field(10)
     """The field JSON name."""
 
-    default_value: str = cbiproto.string_field(11)
+    default_value: str = cbproto.string_field(11)
     """The string value of the default value of this field. Proto2 syntax only."""
 
-    class Kind(cbiproto.Enum):
+    class Kind(cbproto.Enum):
         """Basic field types."""
 
         TYPE_UNKNOWN = 0
@@ -620,7 +620,7 @@ class Field(cbiproto.Message):
         TYPE_SINT64 = 18
         """Field type sint64."""
 
-    class Cardinality(cbiproto.Enum):
+    class Cardinality(cbproto.Enum):
         """Whether a field is optional, required, or repeated."""
 
         CARDINALITY_UNKNOWN = 0
@@ -637,47 +637,47 @@ class Field(cbiproto.Message):
 
 
 @dataclass(eq=False, repr=False)
-class Enum(cbiproto.Message):
+class Enum(cbproto.Message):
     """Enum type definition."""
 
-    name: str = cbiproto.string_field(1)
+    name: str = cbproto.string_field(1)
     """Enum type name."""
 
-    enumvalue: List["EnumValue"] = cbiproto.message_field(2, wraps=cbiproto.TYPE_ENUM)
+    enumvalue: List["EnumValue"] = cbproto.message_field(2, wraps=cbproto.TYPE_ENUM)
     """Enum value definitions."""
 
-    options: List["Option"] = cbiproto.message_field(3)
+    options: List["Option"] = cbproto.message_field(3)
     """Protocol buffer options."""
 
-    source_context: "SourceContext" = cbiproto.message_field(4)
+    source_context: "SourceContext" = cbproto.message_field(4)
     """The source context."""
 
-    syntax: "Syntax" = cbiproto.enum_field(5)
+    syntax: "Syntax" = cbproto.enum_field(5)
     """The source syntax."""
 
 
 @dataclass(eq=False, repr=False)
-class EnumValue(cbiproto.Message):
+class EnumValue(cbproto.Message):
     """Enum value definition."""
 
-    name: str = cbiproto.string_field(1)
+    name: str = cbproto.string_field(1)
     """Enum value name."""
 
-    number: int = cbiproto.int32_field(2)
+    number: int = cbproto.int32_field(2)
     """Enum value number."""
 
-    options: List["Option"] = cbiproto.message_field(3)
+    options: List["Option"] = cbproto.message_field(3)
     """Protocol buffer options."""
 
 
 @dataclass(eq=False, repr=False)
-class Option(cbiproto.Message):
+class Option(cbproto.Message):
     """
     A protocol buffer option, which can be attached to a message, field,
     enumeration, etc.
     """
 
-    name: str = cbiproto.string_field(1)
+    name: str = cbproto.string_field(1)
     """
     The option's name. For protobuf built-in options (options defined in
     descriptor.proto), this is the short name. For example, `"map_entry"`.
@@ -685,7 +685,7 @@ class Option(cbiproto.Message):
     `"google.api.http"`.
     """
 
-    value: "Any" = cbiproto.message_field(2)
+    value: "Any" = cbproto.message_field(2)
     """
     The option's value packed in an Any message. If the value is a primitive,
     the corresponding wrapper type defined in google/protobuf/wrappers.proto
@@ -695,10 +695,10 @@ class Option(cbiproto.Message):
 
 
 @dataclass(eq=False, repr=False)
-class Api(cbiproto.Message):
+class Api(cbproto.Message):
     """
     Api is a light-weight descriptor for an API Interface.
-    
+
     Interfaces are also described as "protocol buffer services" in some contexts,
     such as by the "service" keyword in a .proto file, but they are different
     from API Services, which represent a concrete implementation of an interface
@@ -708,19 +708,19 @@ class Api(cbiproto.Message):
     detailed terminology.
     """
 
-    name: str = cbiproto.string_field(1)
+    name: str = cbproto.string_field(1)
     """
     The fully qualified name of this interface, including package name
     followed by the interface's simple name.
     """
 
-    methods: List["Method"] = cbiproto.message_field(2)
+    methods: List["Method"] = cbproto.message_field(2)
     """The methods of this interface, in unspecified order."""
 
-    options: List["Option"] = cbiproto.message_field(3)
+    options: List["Option"] = cbproto.message_field(3)
     """Any metadata attached to the interface."""
 
-    version: str = cbiproto.string_field(4)
+    version: str = cbproto.string_field(4)
     """
     A version string for this interface. If specified, must have the form
     `major-version.minor-version`, as in `1.10`. If the minor version is
@@ -728,14 +728,14 @@ class Api(cbiproto.Message):
     major version is derived from the package name, as outlined below. If the
     field is not empty, the version in the package name will be verified to be
     consistent with what is provided here.
-    
+
     The versioning schema uses [semantic
     versioning](http://semver.org) where the major version number
     indicates a breaking change and the minor version an additive,
     non-breaking change. Both version numbers are signals to users
     what to expect from different versions, and should be carefully
     chosen based on the product plan.
-    
+
     The major version is also reflected in the package name of the
     interface, which must end in `v<major-version>`, as in
     `google.feature.v1`. For major versions 0 and 1, the suffix can
@@ -743,67 +743,67 @@ class Api(cbiproto.Message):
     experimental, non-GA interfaces.
     """
 
-    source_context: "SourceContext" = cbiproto.message_field(5)
+    source_context: "SourceContext" = cbproto.message_field(5)
     """
     Source context for the protocol buffer service represented by this
     message.
     """
 
-    mixins: List["Mixin"] = cbiproto.message_field(6)
+    mixins: List["Mixin"] = cbproto.message_field(6)
     """Included interfaces. See [Mixin][]."""
 
-    syntax: "Syntax" = cbiproto.enum_field(7)
+    syntax: "Syntax" = cbproto.enum_field(7)
     """The source syntax of the service."""
 
 
 @dataclass(eq=False, repr=False)
-class Method(cbiproto.Message):
+class Method(cbproto.Message):
     """Method represents a method of an API interface."""
 
-    name: str = cbiproto.string_field(1)
+    name: str = cbproto.string_field(1)
     """The simple name of this method."""
 
-    request_type_url: str = cbiproto.string_field(2)
+    request_type_url: str = cbproto.string_field(2)
     """A URL of the input message type."""
 
-    request_streaming: bool = cbiproto.bool_field(3)
+    request_streaming: bool = cbproto.bool_field(3)
     """If true, the request is streamed."""
 
-    response_type_url: str = cbiproto.string_field(4)
+    response_type_url: str = cbproto.string_field(4)
     """The URL of the output message type."""
 
-    response_streaming: bool = cbiproto.bool_field(5)
+    response_streaming: bool = cbproto.bool_field(5)
     """If true, the response is streamed."""
 
-    options: List["Option"] = cbiproto.message_field(6)
+    options: List["Option"] = cbproto.message_field(6)
     """Any metadata attached to the method."""
 
-    syntax: "Syntax" = cbiproto.enum_field(7)
+    syntax: "Syntax" = cbproto.enum_field(7)
     """The source syntax of this method."""
 
 
 @dataclass(eq=False, repr=False)
-class Mixin(cbiproto.Message):
+class Mixin(cbproto.Message):
     """
     Declares an API Interface to be included in this interface. The including
     interface must redeclare all the methods from the included interface, but
     documentation and options are inherited as follows:
-    
+
     - If after comment and whitespace stripping, the documentation
     string of the redeclared method is empty, it will be inherited
     from the original method.
-    
+
     - Each annotation belonging to the service config (http,
     visibility) which is not set in the redeclared method will be
     inherited.
-    
+
     - If an http annotation is inherited, the path pattern will be
     modified as follows. Any version prefix will be replaced by the
     version of the including interface plus the [root][] path if
     specified.
-    
+
     Example of a simple mixin:
-    
+
         package google.acl.v1;
         service AccessControl {
         // Get the underlying ACL object.
@@ -811,30 +811,30 @@ class Mixin(cbiproto.Message):
             option (google.api.http).get = "/v1/{resource=**}:getAcl";
         }
         }
-    
+
         package google.storage.v2;
         service Storage {
         rpc GetAcl(GetAclRequest) returns (Acl);
-    
+
         // Get a data record.
         rpc GetData(GetDataRequest) returns (Data) {
             option (google.api.http).get = "/v2/{resource=**}";
         }
         }
-    
+
     Example of a mixin configuration:
-    
+
         apis:
         - name: google.storage.v2.Storage
         mixins:
         - name: google.acl.v1.AccessControl
-    
+
     The mixin construct implies that all methods in `AccessControl` are
     also declared with same name and request/response types in
     `Storage`. A documentation generator or annotation processor will
     see the effective `Storage.GetAcl` method after inheriting
     documentation and annotations as follows:
-    
+
         service Storage {
         // Get the underlying ACL object.
         rpc GetAcl(GetAclRequest) returns (Acl) {
@@ -842,20 +842,20 @@ class Mixin(cbiproto.Message):
         }
         ...
         }
-    
+
     Note how the version in the path pattern changed from `v1` to `v2`.
-    
+
     If the `root` field in the mixin is specified, it should be a
     relative path under which inherited HTTP paths are placed. Example:
-    
+
         apis:
         - name: google.storage.v2.Storage
         mixins:
         - name: google.acl.v1.AccessControl
             root: acls
-    
+
     This implies the following inherited HTTP annotation:
-    
+
         service Storage {
         // Get the underlying ACL object.
         rpc GetAcl(GetAclRequest) returns (Acl) {
@@ -865,10 +865,10 @@ class Mixin(cbiproto.Message):
         }
     """
 
-    name: str = cbiproto.string_field(1)
+    name: str = cbproto.string_field(1)
     """The fully qualified name of the interface which is included."""
 
-    root: str = cbiproto.string_field(2)
+    root: str = cbproto.string_field(2)
     """
     If non-empty specifies a path under which inherited HTTP paths
     are rooted.
@@ -876,7 +876,7 @@ class Mixin(cbiproto.Message):
 
 
 @dataclass(eq=False, repr=False)
-class Duration(cbiproto.Message):
+class Duration(cbproto.Message):
     """
     A Duration represents a signed, fixed-length span of time represented
     as a count of seconds and fractions of seconds at nanosecond
@@ -884,18 +884,18 @@ class Duration(cbiproto.Message):
     or "month". It is related to Timestamp in that the difference between
     two Timestamp values is a Duration and it can be added or subtracted
     from a Timestamp. Range is approximately +-10,000 years.
-    
+
     # Examples
-    
+
     Example 1: Compute Duration from two Timestamps in pseudo code.
-    
+
         Timestamp start = ...;
         Timestamp end = ...;
         Duration duration = ...;
-    
+
         duration.seconds = end.seconds - start.seconds;
         duration.nanos = end.nanos - start.nanos;
-    
+
         if (duration.seconds < 0 && duration.nanos > 0) {
         duration.seconds += 1;
         duration.nanos -= 1000000000;
@@ -903,16 +903,16 @@ class Duration(cbiproto.Message):
         duration.seconds -= 1;
         duration.nanos += 1000000000;
         }
-    
+
     Example 2: Compute Timestamp from Timestamp + Duration in pseudo code.
-    
+
         Timestamp start = ...;
         Duration duration = ...;
         Timestamp end = ...;
-    
+
         end.seconds = start.seconds + duration.seconds;
         end.nanos = start.nanos + duration.nanos;
-    
+
         if (end.nanos < 0) {
         end.seconds -= 1;
         end.nanos += 1000000000;
@@ -920,15 +920,15 @@ class Duration(cbiproto.Message):
         end.seconds += 1;
         end.nanos -= 1000000000;
         }
-    
+
     Example 3: Compute Duration from datetime.timedelta in Python.
-    
+
         td = datetime.timedelta(days=3, minutes=10)
         duration = Duration()
         duration.FromTimedelta(td)
-    
+
     # JSON Mapping
-    
+
     In JSON format, the Duration type is encoded as a string rather than an
     object, where the string ends in the suffix "s" (indicating seconds) and
     is preceded by the number of seconds, with nanoseconds expressed as
@@ -938,14 +938,14 @@ class Duration(cbiproto.Message):
     microsecond should be expressed in JSON format as "3.000001s".
     """
 
-    seconds: int = cbiproto.int64_field(1)
+    seconds: int = cbproto.int64_field(1)
     """
     Signed seconds of the span of time. Must be from -315,576,000,000
     to +315,576,000,000 inclusive. Note: these bounds are computed from:
     60 sec/min * 60 min/hr * 24 hr/day * 365.25 days/year * 10000 years
     """
 
-    nanos: int = cbiproto.int32_field(2)
+    nanos: int = cbproto.int32_field(2)
     """
     Signed fractions of a second at nanosecond resolution of the span
     of time. Durations less than one second are represented with a 0
@@ -957,7 +957,7 @@ class Duration(cbiproto.Message):
 
 
 @dataclass(eq=False, repr=False)
-class Struct(cbiproto.Message):
+class Struct(cbproto.Message):
     """
     `Struct` represents a structured data value, consisting of fields
     which map to dynamically typed values. In some languages, `Struct`
@@ -965,175 +965,175 @@ class Struct(cbiproto.Message):
     scripting languages like JS a struct is represented as an
     object. The details of that representation are described together
     with the proto support for the language.
-    
+
     The JSON representation for `Struct` is JSON object.
     """
 
-    fields: Dict[str, "Value"] = cbiproto.map_field(1, cbiproto.TYPE_STRING, cbiproto.TYPE_MESSAGE)
+    fields: Dict[str, "Value"] = cbproto.map_field(1, cbproto.TYPE_STRING, cbproto.TYPE_MESSAGE)
     """Unordered map of dynamically typed values."""
 
 
 @dataclass(eq=False, repr=False)
-class Value(cbiproto.Message):
+class Value(cbproto.Message):
     """
     `Value` represents a dynamically typed value which can be either
     null, a number, a string, a boolean, a recursive struct value, or a
     list of values. A producer of value is expected to set one of these
     variants. Absence of any variant indicates an error.
-    
+
     The JSON representation for `Value` is JSON value.
     """
 
-    null_value: "NullValue" = cbiproto.enum_field(1, group="kind")
+    null_value: "NullValue" = cbproto.enum_field(1, group="kind")
     """Represents a null value."""
 
-    number_value: float = cbiproto.double_field(2, group="kind")
+    number_value: float = cbproto.double_field(2, group="kind")
     """Represents a double value."""
 
-    string_value: str = cbiproto.string_field(3, group="kind")
+    string_value: str = cbproto.string_field(3, group="kind")
     """Represents a string value."""
 
-    bool_value: bool = cbiproto.bool_field(4, group="kind")
+    bool_value: bool = cbproto.bool_field(4, group="kind")
     """Represents a boolean value."""
 
-    struct_value: "Struct" = cbiproto.message_field(5, group="kind")
+    struct_value: "Struct" = cbproto.message_field(5, group="kind")
     """Represents a structured value."""
 
-    list_value: "ListValue" = cbiproto.message_field(6, group="kind")
+    list_value: "ListValue" = cbproto.message_field(6, group="kind")
     """Represents a repeated `Value`."""
 
 
 @dataclass(eq=False, repr=False)
-class ListValue(cbiproto.Message):
+class ListValue(cbproto.Message):
     """
     `ListValue` is a wrapper around a repeated field of values.
-    
+
     The JSON representation for `ListValue` is JSON array.
     """
 
-    values: List["Value"] = cbiproto.message_field(1)
+    values: List["Value"] = cbproto.message_field(1)
     """Repeated field of dynamically typed values."""
 
 
 @dataclass(eq=False, repr=False)
-class DoubleValue(cbiproto.Message):
+class DoubleValue(cbproto.Message):
     """
     Wrapper message for `double`.
-    
+
     The JSON representation for `DoubleValue` is JSON number.
     """
 
-    value: float = cbiproto.double_field(1)
+    value: float = cbproto.double_field(1)
     """The double value."""
 
 
 @dataclass(eq=False, repr=False)
-class FloatValue(cbiproto.Message):
+class FloatValue(cbproto.Message):
     """
     Wrapper message for `float`.
-    
+
     The JSON representation for `FloatValue` is JSON number.
     """
 
-    value: float = cbiproto.float_field(1)
+    value: float = cbproto.float_field(1)
     """The float value."""
 
 
 @dataclass(eq=False, repr=False)
-class Int64Value(cbiproto.Message):
+class Int64Value(cbproto.Message):
     """
     Wrapper message for `int64`.
-    
+
     The JSON representation for `Int64Value` is JSON string.
     """
 
-    value: int = cbiproto.int64_field(1)
+    value: int = cbproto.int64_field(1)
     """The int64 value."""
 
 
 @dataclass(eq=False, repr=False)
-class UInt64Value(cbiproto.Message):
+class UInt64Value(cbproto.Message):
     """
     Wrapper message for `uint64`.
-    
+
     The JSON representation for `UInt64Value` is JSON string.
     """
 
-    value: int = cbiproto.uint64_field(1)
+    value: int = cbproto.uint64_field(1)
     """The uint64 value."""
 
 
 @dataclass(eq=False, repr=False)
-class Int32Value(cbiproto.Message):
+class Int32Value(cbproto.Message):
     """
     Wrapper message for `int32`.
-    
+
     The JSON representation for `Int32Value` is JSON number.
     """
 
-    value: int = cbiproto.int32_field(1)
+    value: int = cbproto.int32_field(1)
     """The int32 value."""
 
 
 @dataclass(eq=False, repr=False)
-class UInt32Value(cbiproto.Message):
+class UInt32Value(cbproto.Message):
     """
     Wrapper message for `uint32`.
-    
+
     The JSON representation for `UInt32Value` is JSON number.
     """
 
-    value: int = cbiproto.uint32_field(1)
+    value: int = cbproto.uint32_field(1)
     """The uint32 value."""
 
 
 @dataclass(eq=False, repr=False)
-class BoolValue(cbiproto.Message):
+class BoolValue(cbproto.Message):
     """
     Wrapper message for `bool`.
-    
+
     The JSON representation for `BoolValue` is JSON `true` and `false`.
     """
 
-    value: bool = cbiproto.bool_field(1)
+    value: bool = cbproto.bool_field(1)
     """The bool value."""
 
 
 @dataclass(eq=False, repr=False)
-class StringValue(cbiproto.Message):
+class StringValue(cbproto.Message):
     """
     Wrapper message for `string`.
-    
+
     The JSON representation for `StringValue` is JSON string.
     """
 
-    value: str = cbiproto.string_field(1)
+    value: str = cbproto.string_field(1)
     """The string value."""
 
 
 @dataclass(eq=False, repr=False)
-class BytesValue(cbiproto.Message):
+class BytesValue(cbproto.Message):
     """
     Wrapper message for `bytes`.
-    
+
     The JSON representation for `BytesValue` is JSON string.
     """
 
-    value: bytes = cbiproto.bytes_field(1)
+    value: bytes = cbproto.bytes_field(1)
     """The bytes value."""
 
 
 @dataclass(eq=False, repr=False)
-class Empty(cbiproto.Message):
+class Empty(cbproto.Message):
     """
     A generic empty message that you can re-use to avoid defining duplicated
     empty messages in your APIs. A typical example is to use it as the request
     or the response type of an API method. For instance:
-    
+
         service Foo {
         rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);
         }
-    
+
     The JSON representation for `Empty` is empty JSON object `{}`.
     """
 
@@ -1141,41 +1141,41 @@ class Empty(cbiproto.Message):
 
 
 @dataclass(eq=False, repr=False)
-class FileDescriptorSet(cbiproto.Message):
+class FileDescriptorSet(cbproto.Message):
     """
     The protocol compiler can output a FileDescriptorSet containing the .proto
     files it parses.
     """
 
-    file: List["FileDescriptorProto"] = cbiproto.message_field(1)
+    file: List["FileDescriptorProto"] = cbproto.message_field(1)
 
 
 @dataclass(eq=False, repr=False)
-class FileDescriptorProto(cbiproto.Message):
+class FileDescriptorProto(cbproto.Message):
     """Describes a complete .proto file."""
 
-    name: str = cbiproto.string_field(1)
-    package: str = cbiproto.string_field(2)
-    dependency: List[str] = cbiproto.string_field(3)
+    name: str = cbproto.string_field(1)
+    package: str = cbproto.string_field(2)
+    dependency: List[str] = cbproto.string_field(3)
     """Names of files imported by this file."""
 
-    public_dependency: List[int] = cbiproto.int32_field(10)
+    public_dependency: List[int] = cbproto.int32_field(10)
     """Indexes of the public imported files in the dependency list above."""
 
-    weak_dependency: List[int] = cbiproto.int32_field(11)
+    weak_dependency: List[int] = cbproto.int32_field(11)
     """
     Indexes of the weak imported files in the dependency list.
     For Google-internal migration only. Do not use.
     """
 
-    message_type: List["DescriptorProto"] = cbiproto.message_field(4)
+    message_type: List["DescriptorProto"] = cbproto.message_field(4)
     """All top-level definitions in this file."""
 
-    enum_type: List["EnumDescriptorProto"] = cbiproto.message_field(5)
-    service: List["ServiceDescriptorProto"] = cbiproto.message_field(6)
-    extension: List["FieldDescriptorProto"] = cbiproto.message_field(7)
-    options: "FileOptions" = cbiproto.message_field(8)
-    source_code_info: "SourceCodeInfo" = cbiproto.message_field(9)
+    enum_type: List["EnumDescriptorProto"] = cbproto.message_field(5)
+    service: List["ServiceDescriptorProto"] = cbproto.message_field(6)
+    extension: List["FieldDescriptorProto"] = cbproto.message_field(7)
+    options: "FileOptions" = cbproto.message_field(8)
+    source_code_info: "SourceCodeInfo" = cbproto.message_field(9)
     """
     This field contains optional information about the original source code.
     You may safely remove this entire field without harming runtime
@@ -1183,7 +1183,7 @@ class FileDescriptorProto(cbiproto.Message):
     development tools.
     """
 
-    syntax: str = cbiproto.string_field(12)
+    syntax: str = cbproto.string_field(12)
     """
     The syntax of the proto file.
     The supported values are "proto2" and "proto3".
@@ -1191,62 +1191,62 @@ class FileDescriptorProto(cbiproto.Message):
 
 
 @dataclass(eq=False, repr=False)
-class DescriptorProto(cbiproto.Message):
+class DescriptorProto(cbproto.Message):
     """Describes a message type."""
 
-    name: str = cbiproto.string_field(1)
-    field: List["FieldDescriptorProto"] = cbiproto.message_field(2)
-    extension: List["FieldDescriptorProto"] = cbiproto.message_field(6)
-    nested_type: List["DescriptorProto"] = cbiproto.message_field(3)
-    enum_type: List["EnumDescriptorProto"] = cbiproto.message_field(4)
-    extension_range: List["DescriptorProto.ExtensionRange"] = cbiproto.message_field(5)
-    oneof_decl: List["OneofDescriptorProto"] = cbiproto.message_field(8)
-    options: "MessageOptions" = cbiproto.message_field(7)
-    reserved_range: List["DescriptorProto.ReservedRange"] = cbiproto.message_field(9)
-    reserved_name: List[str] = cbiproto.string_field(10)
+    name: str = cbproto.string_field(1)
+    field: List["FieldDescriptorProto"] = cbproto.message_field(2)
+    extension: List["FieldDescriptorProto"] = cbproto.message_field(6)
+    nested_type: List["DescriptorProto"] = cbproto.message_field(3)
+    enum_type: List["EnumDescriptorProto"] = cbproto.message_field(4)
+    extension_range: List["DescriptorProto.ExtensionRange"] = cbproto.message_field(5)
+    oneof_decl: List["OneofDescriptorProto"] = cbproto.message_field(8)
+    options: "MessageOptions" = cbproto.message_field(7)
+    reserved_range: List["DescriptorProto.ReservedRange"] = cbproto.message_field(9)
+    reserved_name: List[str] = cbproto.string_field(10)
     """
     Reserved field names, which may not be used by fields in the same message.
     A given name may only be reserved once.
     """
 
     @dataclass(eq=False, repr=False)
-    class ExtensionRange(cbiproto.Message):
-        start: int = cbiproto.int32_field(1)
-        end: int = cbiproto.int32_field(2)
-        options: "ExtensionRangeOptions" = cbiproto.message_field(3)
+    class ExtensionRange(cbproto.Message):
+        start: int = cbproto.int32_field(1)
+        end: int = cbproto.int32_field(2)
+        options: "ExtensionRangeOptions" = cbproto.message_field(3)
 
     @dataclass(eq=False, repr=False)
-    class ReservedRange(cbiproto.Message):
+    class ReservedRange(cbproto.Message):
         """
         Range of reserved tag numbers. Reserved tag numbers may not be used by
         fields or extension ranges in the same message. Reserved ranges may
         not overlap.
         """
 
-        start: int = cbiproto.int32_field(1)
-        end: int = cbiproto.int32_field(2)
+        start: int = cbproto.int32_field(1)
+        end: int = cbproto.int32_field(2)
 
 
 @dataclass(eq=False, repr=False)
-class ExtensionRangeOptions(cbiproto.Message):
-    uninterpreted_option: List["UninterpretedOption"] = cbiproto.message_field(999)
+class ExtensionRangeOptions(cbproto.Message):
+    uninterpreted_option: List["UninterpretedOption"] = cbproto.message_field(999)
     """The parser stores options it doesn't recognize here. See above."""
 
 
 @dataclass(eq=False, repr=False)
-class FieldDescriptorProto(cbiproto.Message):
+class FieldDescriptorProto(cbproto.Message):
     """Describes a field within a message."""
 
-    name: str = cbiproto.string_field(1)
-    number: int = cbiproto.int32_field(3)
-    label: "FieldDescriptorProto.Label" = cbiproto.enum_field(4)
-    type: "FieldDescriptorProto.Type" = cbiproto.enum_field(5)
+    name: str = cbproto.string_field(1)
+    number: int = cbproto.int32_field(3)
+    label: "FieldDescriptorProto.Label" = cbproto.enum_field(4)
+    type: "FieldDescriptorProto.Type" = cbproto.enum_field(5)
     """
     If type_name is set, this need not be set.  If both this and type_name
     are set, this must be one of TYPE_ENUM, TYPE_MESSAGE or TYPE_GROUP.
     """
 
-    type_name: str = cbiproto.string_field(6)
+    type_name: str = cbproto.string_field(6)
     """
     For message and enum types, this is the name of the type.  If the name
     starts with a '.', it is fully-qualified.  Otherwise, C++-like scoping
@@ -1255,13 +1255,13 @@ class FieldDescriptorProto(cbiproto.Message):
     namespace).
     """
 
-    extendee: str = cbiproto.string_field(2)
+    extendee: str = cbproto.string_field(2)
     """
     For extensions, this is the name of the type being extended.  It is
     resolved in the same manner as type_name.
     """
 
-    default_value: str = cbiproto.string_field(7)
+    default_value: str = cbproto.string_field(7)
     """
     For numeric types, contains the original text representation of the value.
     For booleans, "true" or "false".
@@ -1270,13 +1270,13 @@ class FieldDescriptorProto(cbiproto.Message):
     TODO(kenton):  Base-64 encode?
     """
 
-    oneof_index: int = cbiproto.int32_field(9)
+    oneof_index: int = cbproto.int32_field(9)
     """
     If set, gives the index of a oneof in the containing type's oneof_decl
     list.  This field is a member of that oneof.
     """
 
-    json_name: str = cbiproto.string_field(10)
+    json_name: str = cbproto.string_field(10)
     """
     JSON name of this field. The value is set by protocol compiler. If the
     user has set a "json_name" option on this field, that option's value
@@ -1284,19 +1284,19 @@ class FieldDescriptorProto(cbiproto.Message):
     it to camelCase.
     """
 
-    options: "FieldOptions" = cbiproto.message_field(8)
-    proto3_optional: bool = cbiproto.bool_field(17)
+    options: "FieldOptions" = cbproto.message_field(8)
+    proto3_optional: bool = cbproto.bool_field(17)
     """
     If true, this is a proto3 "optional". When a proto3 field is optional, it
     tracks presence regardless of field type.
-    
+
     When proto3_optional is true, this field must be belong to a oneof to
     signal to old proto3 clients that presence is tracked for this field. This
     oneof is known as a "synthetic" oneof, and this field must be its sole
     member (each proto3 optional field gets its own synthetic oneof). Synthetic
     oneofs exist in the descriptor only, and do not generate any API. Synthetic
     oneofs must be ordered after all "real" oneofs.
-    
+
     For message fields, proto3_optional doesn't create any semantic change,
     since non-repeated message fields always track presence. However it still
     indicates the semantic detail of whether the user wrote "optional" or not.
@@ -1305,12 +1305,12 @@ class FieldDescriptorProto(cbiproto.Message):
     to track presence. This is especially important because the parser can't
     tell if a field is a message or an enum, so it must always create a
     synthetic oneof.
-    
+
     Proto2 optional fields do not set this flag, because they already indicate
     optional with `LABEL_OPTIONAL`.
     """
 
-    class Type(cbiproto.Enum):
+    class Type(cbproto.Enum):
         TYPE_DOUBLE = 1
         """
         0 is reserved for errors.
@@ -1354,7 +1354,7 @@ class FieldDescriptorProto(cbiproto.Message):
         TYPE_SINT32 = 17
         TYPE_SINT64 = 18
 
-    class Label(cbiproto.Enum):
+    class Label(cbproto.Enum):
         LABEL_OPTIONAL = 1
         """0 is reserved for errors"""
 
@@ -1363,89 +1363,89 @@ class FieldDescriptorProto(cbiproto.Message):
 
 
 @dataclass(eq=False, repr=False)
-class OneofDescriptorProto(cbiproto.Message):
+class OneofDescriptorProto(cbproto.Message):
     """Describes a oneof."""
 
-    name: str = cbiproto.string_field(1)
-    options: "OneofOptions" = cbiproto.message_field(2)
+    name: str = cbproto.string_field(1)
+    options: "OneofOptions" = cbproto.message_field(2)
 
 
 @dataclass(eq=False, repr=False)
-class EnumDescriptorProto(cbiproto.Message):
+class EnumDescriptorProto(cbproto.Message):
     """Describes an enum type."""
 
-    name: str = cbiproto.string_field(1)
-    value: List["EnumValueDescriptorProto"] = cbiproto.message_field(2)
-    options: "EnumOptions" = cbiproto.message_field(3)
-    reserved_range: List["EnumDescriptorProto.EnumReservedRange"] = cbiproto.message_field(4)
+    name: str = cbproto.string_field(1)
+    value: List["EnumValueDescriptorProto"] = cbproto.message_field(2)
+    options: "EnumOptions" = cbproto.message_field(3)
+    reserved_range: List["EnumDescriptorProto.EnumReservedRange"] = cbproto.message_field(4)
     """
     Range of reserved numeric values. Reserved numeric values may not be used
     by enum values in the same enum declaration. Reserved ranges may not
     overlap.
     """
 
-    reserved_name: List[str] = cbiproto.string_field(5)
+    reserved_name: List[str] = cbproto.string_field(5)
     """
     Reserved enum value names, which may not be reused. A given name may only
     be reserved once.
     """
 
     @dataclass(eq=False, repr=False)
-    class EnumReservedRange(cbiproto.Message):
+    class EnumReservedRange(cbproto.Message):
         """
         Range of reserved numeric values. Reserved values may not be used by
         entries in the same enum. Reserved ranges may not overlap.
-        
+
         Note that this is distinct from DescriptorProto.ReservedRange in that it
         is inclusive such that it can appropriately represent the entire int32
         domain.
         """
 
-        start: int = cbiproto.int32_field(1)
-        end: int = cbiproto.int32_field(2)
+        start: int = cbproto.int32_field(1)
+        end: int = cbproto.int32_field(2)
 
 
 @dataclass(eq=False, repr=False)
-class EnumValueDescriptorProto(cbiproto.Message):
+class EnumValueDescriptorProto(cbproto.Message):
     """Describes a value within an enum."""
 
-    name: str = cbiproto.string_field(1)
-    number: int = cbiproto.int32_field(2)
-    options: "EnumValueOptions" = cbiproto.message_field(3)
+    name: str = cbproto.string_field(1)
+    number: int = cbproto.int32_field(2)
+    options: "EnumValueOptions" = cbproto.message_field(3)
 
 
 @dataclass(eq=False, repr=False)
-class ServiceDescriptorProto(cbiproto.Message):
+class ServiceDescriptorProto(cbproto.Message):
     """Describes a service."""
 
-    name: str = cbiproto.string_field(1)
-    method: List["MethodDescriptorProto"] = cbiproto.message_field(2)
-    options: "ServiceOptions" = cbiproto.message_field(3)
+    name: str = cbproto.string_field(1)
+    method: List["MethodDescriptorProto"] = cbproto.message_field(2)
+    options: "ServiceOptions" = cbproto.message_field(3)
 
 
 @dataclass(eq=False, repr=False)
-class MethodDescriptorProto(cbiproto.Message):
+class MethodDescriptorProto(cbproto.Message):
     """Describes a method of a service."""
 
-    name: str = cbiproto.string_field(1)
-    input_type: str = cbiproto.string_field(2)
+    name: str = cbproto.string_field(1)
+    input_type: str = cbproto.string_field(2)
     """
     Input and output type names.  These are resolved in the same way as
     FieldDescriptorProto.type_name, but must refer to a message type.
     """
 
-    output_type: str = cbiproto.string_field(3)
-    options: "MethodOptions" = cbiproto.message_field(4)
-    client_streaming: bool = cbiproto.bool_field(5)
+    output_type: str = cbproto.string_field(3)
+    options: "MethodOptions" = cbproto.message_field(4)
+    client_streaming: bool = cbproto.bool_field(5)
     """Identifies if client streams multiple client messages"""
 
-    server_streaming: bool = cbiproto.bool_field(6)
+    server_streaming: bool = cbproto.bool_field(6)
     """Identifies if server streams multiple server messages"""
 
 
 @dataclass(eq=False, repr=False)
-class FileOptions(cbiproto.Message):
-    java_package: str = cbiproto.string_field(1)
+class FileOptions(cbproto.Message):
+    java_package: str = cbproto.string_field(1)
     """
     Sets the Java package where classes generated from this .proto will be
     placed.  By default, the proto package is used, but this is often
@@ -1453,7 +1453,7 @@ class FileOptions(cbiproto.Message):
     domain names.
     """
 
-    java_outer_classname: str = cbiproto.string_field(8)
+    java_outer_classname: str = cbproto.string_field(8)
     """
     Controls the name of the wrapper Java class generated for the .proto file.
     That class will always contain the .proto file's getDescriptor() method as
@@ -1462,7 +1462,7 @@ class FileOptions(cbiproto.Message):
     .proto file will be nested inside the single wrapper outer class.
     """
 
-    java_multiple_files: bool = cbiproto.bool_field(10)
+    java_multiple_files: bool = cbproto.bool_field(10)
     """
     If enabled, then the Java code generator will generate a separate .java
     file for each top-level message, enum, and service defined in the .proto
@@ -1472,10 +1472,10 @@ class FileOptions(cbiproto.Message):
     top-level extensions defined in the file.
     """
 
-    java_generate_equals_and_hash: bool = cbiproto.bool_field(20)
+    java_generate_equals_and_hash: bool = cbproto.bool_field(20)
     """This option does nothing."""
 
-    java_string_check_utf8: bool = cbiproto.bool_field(27)
+    java_string_check_utf8: bool = cbproto.bool_field(27)
     """
     If set true, then the Java2 code generator will generate code that
     throws an exception whenever an attempt is made to assign a non-UTF-8
@@ -1485,8 +1485,8 @@ class FileOptions(cbiproto.Message):
     This option has no effect on when used with the lite runtime.
     """
 
-    optimize_for: "FileOptions.OptimizeMode" = cbiproto.enum_field(9)
-    go_package: str = cbiproto.string_field(11)
+    optimize_for: "FileOptions.OptimizeMode" = cbproto.enum_field(9)
+    go_package: str = cbproto.string_field(11)
     """
     Sets the Go package where structs generated from this .proto will be
     placed. If omitted, the Go package will be derived from the following:
@@ -1495,24 +1495,24 @@ class FileOptions(cbiproto.Message):
     - Otherwise, the basename of the .proto file, without extension.
     """
 
-    cc_generic_services: bool = cbiproto.bool_field(16)
+    cc_generic_services: bool = cbproto.bool_field(16)
     """
     Should generic services be generated in each language?  "Generic" services
     are not specific to any particular RPC system.  They are generated by the
     main code generators in each language (without additional plugins).
     Generic services were the only kind of service generation supported by
     early versions of google.protobuf.
-    
+
     Generic services are now considered deprecated in favor of using plugins
     that generate code specific to your particular RPC system.  Therefore,
     these default to false.  Old code which depends on generic services should
     explicitly set them to true.
     """
 
-    java_generic_services: bool = cbiproto.bool_field(17)
-    py_generic_services: bool = cbiproto.bool_field(18)
-    php_generic_services: bool = cbiproto.bool_field(42)
-    deprecated: bool = cbiproto.bool_field(23)
+    java_generic_services: bool = cbproto.bool_field(17)
+    py_generic_services: bool = cbproto.bool_field(18)
+    php_generic_services: bool = cbproto.bool_field(42)
+    deprecated: bool = cbproto.bool_field(23)
     """
     Is this file deprecated?
     Depending on the target platform, this can emit Deprecated annotations
@@ -1520,22 +1520,22 @@ class FileOptions(cbiproto.Message):
     least, this is a formalization for deprecating files.
     """
 
-    cc_enable_arenas: bool = cbiproto.bool_field(31)
+    cc_enable_arenas: bool = cbproto.bool_field(31)
     """
     Enables the use of arenas for the proto messages in this file. This applies
     only to generated classes for C++.
     """
 
-    objc_class_prefix: str = cbiproto.string_field(36)
+    objc_class_prefix: str = cbproto.string_field(36)
     """
     Sets the objective c class prefix which is prepended to all objective c
     generated classes from this .proto. There is no default.
     """
 
-    csharp_namespace: str = cbiproto.string_field(37)
+    csharp_namespace: str = cbproto.string_field(37)
     """Namespace for generated classes; defaults to the package."""
 
-    swift_prefix: str = cbiproto.string_field(39)
+    swift_prefix: str = cbproto.string_field(39)
     """
     By default Swift generators will take the proto package and CamelCase it
     replacing '.' with underscore and use that to prefix the types/symbols
@@ -1543,40 +1543,40 @@ class FileOptions(cbiproto.Message):
     to prefix the types/symbols defined.
     """
 
-    php_class_prefix: str = cbiproto.string_field(40)
+    php_class_prefix: str = cbproto.string_field(40)
     """
     Sets the php class prefix which is prepended to all php generated classes
     from this .proto. Default is empty.
     """
 
-    php_namespace: str = cbiproto.string_field(41)
+    php_namespace: str = cbproto.string_field(41)
     """
     Use this option to change the namespace of php generated classes. Default
     is empty. When this option is empty, the package name will be used for
     determining the namespace.
     """
 
-    php_metadata_namespace: str = cbiproto.string_field(44)
+    php_metadata_namespace: str = cbproto.string_field(44)
     """
     Use this option to change the namespace of php generated metadata classes.
     Default is empty. When this option is empty, the proto file name will be
     used for determining the namespace.
     """
 
-    ruby_package: str = cbiproto.string_field(45)
+    ruby_package: str = cbproto.string_field(45)
     """
     Use this option to change the package of ruby generated classes. Default
     is empty. When this option is not set, the package name will be used for
     determining the ruby package.
     """
 
-    uninterpreted_option: List["UninterpretedOption"] = cbiproto.message_field(999)
+    uninterpreted_option: List["UninterpretedOption"] = cbproto.message_field(999)
     """
     The parser stores options it doesn't recognize here.
     See the documentation for the "Options" section above.
     """
 
-    class OptimizeMode(cbiproto.Enum):
+    class OptimizeMode(cbproto.Enum):
         """Generated classes can be optimized for speed or code size."""
 
         SPEED = 1
@@ -1591,14 +1591,14 @@ class FileOptions(cbiproto.Message):
 
 
 @dataclass(eq=False, repr=False)
-class MessageOptions(cbiproto.Message):
-    message_set_wire_format: bool = cbiproto.bool_field(1)
+class MessageOptions(cbproto.Message):
+    message_set_wire_format: bool = cbproto.bool_field(1)
     """
     Set true to use the old proto1 MessageSet wire format for extensions.
     This is provided for backwards-compatibility with the MessageSet wire
     format.  You should not use this for any other reason:  It's less
     efficient, has fewer features, and is more complicated.
-    
+
     The message must be defined exactly as follows:
     message Foo {
         option message_set_wire_format = true;
@@ -1606,22 +1606,22 @@ class MessageOptions(cbiproto.Message):
     }
     Note that the message cannot have any defined fields; MessageSets only
     have extensions.
-    
+
     All extensions of your type must be singular messages; e.g. they cannot
     be int32s, enums, or repeated messages.
-    
+
     Because this is an option, the above two restrictions are not enforced by
     the protocol compiler.
     """
 
-    no_standard_descriptor_accessor: bool = cbiproto.bool_field(2)
+    no_standard_descriptor_accessor: bool = cbproto.bool_field(2)
     """
     Disables the generation of the standard "descriptor()" accessor, which can
     conflict with a field of the same name.  This is meant to make migration
     from proto1 easier; new code should avoid fields named "descriptor".
     """
 
-    deprecated: bool = cbiproto.bool_field(3)
+    deprecated: bool = cbproto.bool_field(3)
     """
     Is this message deprecated?
     Depending on the target platform, this can emit Deprecated annotations
@@ -1629,11 +1629,11 @@ class MessageOptions(cbiproto.Message):
     this is a formalization for deprecating messages.
     """
 
-    map_entry: bool = cbiproto.bool_field(7)
+    map_entry: bool = cbproto.bool_field(7)
     """
     Whether the message is an automatically generated map entry type for the
     maps field.
-    
+
     For maps fields:
         map<KeyType, ValueType> map_field = 1;
     The parsed descriptor looks like:
@@ -1643,24 +1643,24 @@ class MessageOptions(cbiproto.Message):
             optional ValueType value = 2;
         }
         repeated MapFieldEntry map_field = 1;
-    
+
     Implementations may choose not to generate the map_entry=true message, but
     use a native map in the target language to hold the keys and values.
     The reflection APIs in such implementations still need to work as
     if the field is a repeated message field.
-    
+
     NOTE: Do not set the option in .proto files. Always use the maps syntax
     instead. The option should only be implicitly set by the proto compiler
     parser.
     """
 
-    uninterpreted_option: List["UninterpretedOption"] = cbiproto.message_field(999)
+    uninterpreted_option: List["UninterpretedOption"] = cbproto.message_field(999)
     """The parser stores options it doesn't recognize here. See above."""
 
 
 @dataclass(eq=False, repr=False)
-class FieldOptions(cbiproto.Message):
-    ctype: "FieldOptions.CType" = cbiproto.enum_field(1)
+class FieldOptions(cbproto.Message):
+    ctype: "FieldOptions.CType" = cbproto.enum_field(1)
     """
     The ctype option instructs the C++ code generator to use a different
     representation of the field than it normally would.  See the specific
@@ -1668,7 +1668,7 @@ class FieldOptions(cbiproto.Message):
     release -- sorry, we'll try to include it in a future version!
     """
 
-    packed: bool = cbiproto.bool_field(2)
+    packed: bool = cbproto.bool_field(2)
     """
     The packed option can be enabled for repeated primitive fields to enable
     a more efficient representation on the wire. Rather than repeatedly
@@ -1677,7 +1677,7 @@ class FieldOptions(cbiproto.Message):
     false will avoid using packed encoding.
     """
 
-    jstype: "FieldOptions.JsType" = cbiproto.enum_field(6)
+    jstype: "FieldOptions.JsType" = cbproto.enum_field(6)
     """
     The jstype option determines the JavaScript type used for values of the
     field.  The option is permitted only for 64 bit integral and fixed types
@@ -1687,31 +1687,31 @@ class FieldOptions(cbiproto.Message):
     Specifying JS_NUMBER for the jstype causes the generated JavaScript code to
     use the JavaScript "number" type.  The behavior of the default option
     JS_NORMAL is implementation dependent.
-    
+
     This option is an enum to permit additional types to be added, e.g.
     goog.math.Integer.
     """
 
-    lazy: bool = cbiproto.bool_field(5)
+    lazy: bool = cbproto.bool_field(5)
     """
     Should this field be parsed lazily?  Lazy applies only to message-type
     fields.  It means that when the outer message is initially parsed, the
     inner message's contents will not be parsed but instead stored in encoded
     form.  The inner message will actually be parsed when it is first accessed.
-    
+
     This is only a hint.  Implementations are free to choose whether to use
     eager or lazy parsing regardless of the value of this option.  However,
     setting this option true suggests that the protocol author believes that
     using lazy parsing on this field is worth the additional bookkeeping
     overhead typically needed to implement it.
-    
+
     This option does not affect the public interface of any generated code;
     all method signatures remain the same.  Furthermore, thread-safety of the
     interface is not affected by this option; const methods remain safe to
     call from multiple threads concurrently, while non-const methods continue
     to require exclusive access.
-    
-    
+
+
     Note that implementations may choose not to check required fields within
     a lazy sub-message.  That is, calling IsInitialized() on the outer message
     may return true even if the inner message has missing required fields.
@@ -1724,7 +1724,7 @@ class FieldOptions(cbiproto.Message):
     been parsed.
     """
 
-    deprecated: bool = cbiproto.bool_field(3)
+    deprecated: bool = cbproto.bool_field(3)
     """
     Is this field deprecated?
     Depending on the target platform, this can emit Deprecated annotations
@@ -1732,20 +1732,20 @@ class FieldOptions(cbiproto.Message):
     is a formalization for deprecating fields.
     """
 
-    weak: bool = cbiproto.bool_field(10)
+    weak: bool = cbproto.bool_field(10)
     """For Google-internal migration only. Do not use."""
 
-    uninterpreted_option: List["UninterpretedOption"] = cbiproto.message_field(999)
+    uninterpreted_option: List["UninterpretedOption"] = cbproto.message_field(999)
     """The parser stores options it doesn't recognize here. See above."""
 
-    class CType(cbiproto.Enum):
+    class CType(cbproto.Enum):
         STRING = 0
         """Default mode."""
 
         CORD = 1
         STRING_PIECE = 2
 
-    class JsType(cbiproto.Enum):
+    class JsType(cbproto.Enum):
         JS_NORMAL = 0
         """Use the default type."""
 
@@ -1757,20 +1757,20 @@ class FieldOptions(cbiproto.Message):
 
 
 @dataclass(eq=False, repr=False)
-class OneofOptions(cbiproto.Message):
-    uninterpreted_option: List["UninterpretedOption"] = cbiproto.message_field(999)
+class OneofOptions(cbproto.Message):
+    uninterpreted_option: List["UninterpretedOption"] = cbproto.message_field(999)
     """The parser stores options it doesn't recognize here. See above."""
 
 
 @dataclass(eq=False, repr=False)
-class EnumOptions(cbiproto.Message):
-    allow_alias: bool = cbiproto.bool_field(2)
+class EnumOptions(cbproto.Message):
+    allow_alias: bool = cbproto.bool_field(2)
     """
     Set this option to true to allow mapping different tag names to the same
     value.
     """
 
-    deprecated: bool = cbiproto.bool_field(3)
+    deprecated: bool = cbproto.bool_field(3)
     """
     Is this enum deprecated?
     Depending on the target platform, this can emit Deprecated annotations
@@ -1778,13 +1778,13 @@ class EnumOptions(cbiproto.Message):
     is a formalization for deprecating enums.
     """
 
-    uninterpreted_option: List["UninterpretedOption"] = cbiproto.message_field(999)
+    uninterpreted_option: List["UninterpretedOption"] = cbproto.message_field(999)
     """The parser stores options it doesn't recognize here. See above."""
 
 
 @dataclass(eq=False, repr=False)
-class EnumValueOptions(cbiproto.Message):
-    deprecated: bool = cbiproto.bool_field(1)
+class EnumValueOptions(cbproto.Message):
+    deprecated: bool = cbproto.bool_field(1)
     """
     Is this enum value deprecated?
     Depending on the target platform, this can emit Deprecated annotations
@@ -1792,13 +1792,13 @@ class EnumValueOptions(cbiproto.Message):
     this is a formalization for deprecating enum values.
     """
 
-    uninterpreted_option: List["UninterpretedOption"] = cbiproto.message_field(999)
+    uninterpreted_option: List["UninterpretedOption"] = cbproto.message_field(999)
     """The parser stores options it doesn't recognize here. See above."""
 
 
 @dataclass(eq=False, repr=False)
-class ServiceOptions(cbiproto.Message):
-    deprecated: bool = cbiproto.bool_field(33)
+class ServiceOptions(cbproto.Message):
+    deprecated: bool = cbproto.bool_field(33)
     """
     Is this service deprecated?
     Depending on the target platform, this can emit Deprecated annotations
@@ -1806,15 +1806,15 @@ class ServiceOptions(cbiproto.Message):
     this is a formalization for deprecating services.
     """
 
-    uninterpreted_option: List["UninterpretedOption"] = cbiproto.message_field(999)
+    uninterpreted_option: List["UninterpretedOption"] = cbproto.message_field(999)
     """The parser stores options it doesn't recognize here. See above."""
 
-    options: Optional["__cbi_protobuf_service__.ServiceOptions"] = cbiproto.message_field(1000, optional=True)
+    options: Optional["__cbi_protobuf_service__.ServiceOptions"] = cbproto.message_field(1000, optional=True)
 
 
 @dataclass(eq=False, repr=False)
-class MethodOptions(cbiproto.Message):
-    deprecated: bool = cbiproto.bool_field(33)
+class MethodOptions(cbproto.Message):
+    deprecated: bool = cbproto.bool_field(33)
     """
     Is this method deprecated?
     Depending on the target platform, this can emit Deprecated annotations
@@ -1822,11 +1822,11 @@ class MethodOptions(cbiproto.Message):
     this is a formalization for deprecating methods.
     """
 
-    idempotency_level: "MethodOptions.IdempotencyLevel" = cbiproto.enum_field(34)
-    uninterpreted_option: List["UninterpretedOption"] = cbiproto.message_field(999)
+    idempotency_level: "MethodOptions.IdempotencyLevel" = cbproto.enum_field(34)
+    uninterpreted_option: List["UninterpretedOption"] = cbproto.message_field(999)
     """The parser stores options it doesn't recognize here. See above."""
 
-    class IdempotencyLevel(cbiproto.Enum):
+    class IdempotencyLevel(cbproto.Enum):
         """
         Is this method side-effect-free (or safe in HTTP parlance), or idempotent,
         or neither? HTTP based RPC implementation may choose GET verb for safe
@@ -1839,7 +1839,7 @@ class MethodOptions(cbiproto.Message):
 
 
 @dataclass(eq=False, repr=False)
-class UninterpretedOption(cbiproto.Message):
+class UninterpretedOption(cbproto.Message):
     """
     A message representing a option the parser does not recognize. This only
     appears in options protos created by the compiler::Parser class.
@@ -1849,21 +1849,21 @@ class UninterpretedOption(cbiproto.Message):
     in them.
     """
 
-    name: List["UninterpretedOption.NamePart"] = cbiproto.message_field(2)
-    identifier_value: str = cbiproto.string_field(3)
+    name: List["UninterpretedOption.NamePart"] = cbproto.message_field(2)
+    identifier_value: str = cbproto.string_field(3)
     """
     The value of the uninterpreted option, in whatever type the tokenizer
     identified it as during parsing. Exactly one of these should be set.
     """
 
-    positive_int_value: int = cbiproto.uint64_field(4)
-    negative_int_value: int = cbiproto.int64_field(5)
-    double_value: float = cbiproto.double_field(6)
-    string_value: bytes = cbiproto.bytes_field(7)
-    aggregate_value: str = cbiproto.string_field(8)
+    positive_int_value: int = cbproto.uint64_field(4)
+    negative_int_value: int = cbproto.int64_field(5)
+    double_value: float = cbproto.double_field(6)
+    string_value: bytes = cbproto.bytes_field(7)
+    aggregate_value: str = cbproto.string_field(8)
 
     @dataclass(eq=False, repr=False)
-    class NamePart(cbiproto.Message):
+    class NamePart(cbproto.Message):
         """
         The name of the uninterpreted option.  Each string represents a segment in
         a dot-separated name.  is_extension is true iff a segment represents an
@@ -1872,24 +1872,24 @@ class UninterpretedOption(cbiproto.Message):
         "foo.(bar.baz).qux".
         """
 
-        name_part: str = cbiproto.string_field(1)
-        is_extension: bool = cbiproto.bool_field(2)
+        name_part: str = cbproto.string_field(1)
+        is_extension: bool = cbproto.bool_field(2)
 
 
 @dataclass(eq=False, repr=False)
-class SourceCodeInfo(cbiproto.Message):
+class SourceCodeInfo(cbproto.Message):
     """
     Encapsulates information about the original source file from which a
     FileDescriptorProto was generated.
     """
 
-    location: List["SourceCodeInfo.Location"] = cbiproto.message_field(1)
+    location: List["SourceCodeInfo.Location"] = cbproto.message_field(1)
     """
     A Location identifies a piece of source code in a .proto file which
     corresponds to a particular definition.  This information is intended
     to be useful to IDEs, code indexers, documentation generators, and similar
     tools.
-    
+
     For example, say we have a file like:
     message Foo {
         optional string foo = 1;
@@ -1905,7 +1905,7 @@ class SourceCodeInfo(cbiproto.Message):
     [c,d)  [ 4, 0, 2, 0, 5 ]  The type (string).
     [e,f)  [ 4, 0, 2, 0, 1 ]  The name (foo).
     [g,h)  [ 4, 0, 2, 0, 3 ]  The number (1).
-    
+
     Notes:
     - A location may refer to a repeated field itself (i.e. not to any
     particular index within it).  This is used whenever a set of elements are
@@ -1931,12 +1931,12 @@ class SourceCodeInfo(cbiproto.Message):
     """
 
     @dataclass(eq=False, repr=False)
-    class Location(cbiproto.Message):
-        path: List[int] = cbiproto.int32_field(1)
+    class Location(cbproto.Message):
+        path: List[int] = cbproto.int32_field(1)
         """
         Identifies which part of the FileDescriptorProto was defined at this
         location.
-        
+
         Each element is a field number or an index.  They form a path from
         the root FileDescriptorProto to the place where the definition.  For
         example, this path:
@@ -1951,7 +1951,7 @@ class SourceCodeInfo(cbiproto.Message):
         repeated FieldDescriptorProto field = 2;
         and FieldDescriptorProto.name has field number 1:
         optional string name = 1;
-        
+
         Thus, the above path gives the location of a field name.  If we removed
         the last element:
         [ 4, 3, 2, 7 ]
@@ -1959,7 +1959,7 @@ class SourceCodeInfo(cbiproto.Message):
         of the label to the terminating semicolon).
         """
 
-        span: List[int] = cbiproto.int32_field(2)
+        span: List[int] = cbproto.int32_field(2)
         """
         Always has exactly three or four elements: start line, start column,
         end line (optional, otherwise assumed same as start line), end column.
@@ -1968,46 +1968,46 @@ class SourceCodeInfo(cbiproto.Message):
         1 to each before displaying to a user.
         """
 
-        leading_comments: str = cbiproto.string_field(3)
+        leading_comments: str = cbproto.string_field(3)
         """
         If this SourceCodeInfo represents a complete declaration, these are any
         comments appearing before and after the declaration which appear to be
         attached to the declaration.
-        
+
         A series of line comments appearing on consecutive lines, with no other
         tokens appearing on those lines, will be treated as a single comment.
-        
+
         leading_detached_comments will keep paragraphs of comments that appear
         before (but not connected to) the current element. Each paragraph,
         separated by empty lines, will be one comment element in the repeated
         field.
-        
+
         Only the comment content is provided; comment markers (e.g. //) are
         stripped out.  For block comments, leading whitespace and an asterisk
         will be stripped from the beginning of each line other than the first.
         Newlines are included in the output.
-        
+
         Examples:
-        
+
         optional int32 foo = 1;  // Comment attached to foo.
         // Comment attached to bar.
         optional int32 bar = 2;
-        
+
         optional string baz = 3;
         // Comment attached to baz.
         // Another line attached to baz.
-        
+
         // Comment attached to qux.
         //
         // Another line attached to qux.
         optional double qux = 4;
-        
+
         // Detached comment for corge. This is not leading or trailing comments
         // to qux or corge because there are blank lines separating it from
         // both.
-        
+
         // Detached comment for corge paragraph 2.
-        
+
         optional string corge = 5;
         /* Block comment attached
             * to corge.  Leading asterisks
@@ -2015,46 +2015,46 @@ class SourceCodeInfo(cbiproto.Message):
         /* Block comment attached to
             * grault. */
         optional int32 grault = 6;
-        
+
         // ignored detached comments.
         """
 
-        trailing_comments: str = cbiproto.string_field(4)
-        leading_detached_comments: List[str] = cbiproto.string_field(6)
+        trailing_comments: str = cbproto.string_field(4)
+        leading_detached_comments: List[str] = cbproto.string_field(6)
 
 
 @dataclass(eq=False, repr=False)
-class GeneratedCodeInfo(cbiproto.Message):
+class GeneratedCodeInfo(cbproto.Message):
     """
     Describes the relationship between generated code and its original source
     file. A GeneratedCodeInfo message is associated with only one generated
     source file, but may contain references to different source .proto files.
     """
 
-    annotation: List["GeneratedCodeInfo.Annotation"] = cbiproto.message_field(1)
+    annotation: List["GeneratedCodeInfo.Annotation"] = cbproto.message_field(1)
     """
     An Annotation connects some span of text in generated code to an element
     of its generating .proto file.
     """
 
     @dataclass(eq=False, repr=False)
-    class Annotation(cbiproto.Message):
-        path: List[int] = cbiproto.int32_field(1)
+    class Annotation(cbproto.Message):
+        path: List[int] = cbproto.int32_field(1)
         """
         Identifies the element in the original source .proto file. This field
         is formatted the same as SourceCodeInfo.Location.path.
         """
 
-        source_file: str = cbiproto.string_field(2)
+        source_file: str = cbproto.string_field(2)
         """Identifies the filesystem path to the original source .proto."""
 
-        begin: int = cbiproto.int32_field(3)
+        begin: int = cbproto.int32_field(3)
         """
         Identifies the starting offset in bytes in the generated code
         that relates to the identified object.
         """
 
-        end: int = cbiproto.int32_field(4)
+        end: int = cbproto.int32_field(4)
         """
         Identifies the ending offset in bytes in the generated code that
         relates to the identified offset. The end offset should be one past
