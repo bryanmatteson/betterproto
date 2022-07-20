@@ -20,7 +20,7 @@ from typing import (
 from typing_extensions import ParamSpec
 
 if TYPE_CHECKING:
-    from cbiproto import Message
+    from cbproto import Message
 
 
 TRequest = TypeVar("TRequest", bound="Message")
