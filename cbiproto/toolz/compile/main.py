@@ -17,7 +17,7 @@ except ImportError as err:
     print(
         "\033[31m"
         f"Unable to import `{err.name}`!"
-        "Please ensure that you've installed cbproto with the [compiler] extra "
+        "Please ensure that you've installed cbiproto with the [compiler] extra "
         "so that compiler dependencies are included."
         "\033[0m"
     )
@@ -76,15 +76,15 @@ def compile_protos(args: Args) -> int:  # noqa: C901
                 f"--mypy_out=readable_stubs:{temp_dir}",
             ]
         else:
-            compilation += [f"--python_cbproto_out={temp_dir}"]
+            compilation += [f"--python_cbiproto_out={temp_dir}"]
             for o in args.options:
-                compilation.append(f"--python_cbproto_opt={o}")
+                compilation.append(f"--python_cbiproto_opt={o}")
 
             if args.include_google:
-                compilation.append("--python_cbproto_opt=include_google")
+                compilation.append("--python_cbiproto_opt=include_google")
 
             if args.asynchronous:
-                compilation.append("--python_cbproto_opt=mode=async")
+                compilation.append("--python_cbiproto_opt=mode=async")
 
         command = ["protoc"] + compilation + list(map(str, files))
         log("running command: ", " ".join(command))
@@ -137,7 +137,7 @@ def run(
 def main():
     """Entrypoint when running from command line"""
 
-    parser = argparse.ArgumentParser(prog="cbproto-compiler")
+    parser = argparse.ArgumentParser(prog="cbiproto-compiler")
     parser.add_argument("-o", "--output", dest="output")
     parser.add_argument("-l", "--legacy", dest="legacy", action="store_true", default=False)
     parser.add_argument("-q", "--quiet", dest="quiet", action="store_true", default=False)

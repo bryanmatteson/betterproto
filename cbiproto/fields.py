@@ -35,7 +35,7 @@ class FieldMetadata:
 
     @staticmethod
     def get(field: dataclasses.Field) -> "FieldMetadata":
-        return field.metadata["cbproto"]
+        return field.metadata["cbiproto"]
 
 
 def proto_field(
@@ -49,7 +49,7 @@ def proto_field(
 ) -> dataclasses.Field:
     default: Any = None if optional else UNSET
     return dataclasses.field(
-        default=default, metadata={"cbproto": FieldMetadata(number, proto_type, map_types, group, wraps, optional)},
+        default=default, metadata={"cbiproto": FieldMetadata(number, proto_type, map_types, group, wraps, optional)},
     )
 
 
