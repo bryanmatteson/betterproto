@@ -17,7 +17,7 @@ except ImportError as err:
     print(
         "\033[31m"
         f"Unable to import `{err.name}`!"
-        "Please ensure that you've installed cbiproto with the [tools] extra"
+        "Please ensure that you've installed cbproto with the [tools] extra"
         "so that compiler dependencies are included."
         "\033[0m"
     )
@@ -68,7 +68,7 @@ def run(
 def main() -> None:
     """Entrypoint when running from command line."""
 
-    parser = argparse.ArgumentParser(prog="cbiproto-fetch")
+    parser = argparse.ArgumentParser(prog="cbproto-fetch")
     parser.add_argument("-o", "--output", type=Path, required=True)
     parser.add_argument("--git-url", default="git@gitlab.cbinsights.com:engineering/protos.git")
     parser.add_argument("requirements", nargs="?", type=Path, default="proto_requirements.txt")

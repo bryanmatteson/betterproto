@@ -1,9 +1,9 @@
 [tool.poetry]
 authors = ["bryan.matteson <bryan.matteson@cbinsights.com>"]
 description = ""
-name = "cbiproto"
+name = "cbproto"
 packages = [
-  {include = "cbiproto"},
+  {include = "cbproto"},
   {include = "grpc-stubs"},
 ]
 version = "0.0.1"
@@ -26,9 +26,9 @@ poethepoet = "^0.12.2"
 pytest = "^5.2"
 
 [tool.poetry.scripts]
-cbiproto-compile = "cbiproto.toolz.compile.main:main"
-cbiproto-fetch = "cbiproto.toolz.fetch.main:main"
-protoc-gen-python_cbiproto = "cbiproto.plugin:main"
+cbproto-compile = "cbproto.toolz.compile.main:main"
+cbproto-fetch = "cbproto.toolz.fetch.main:main"
+protoc-gen-python_cbproto = "cbproto.plugin:main"
 
 [tool.poetry.extras]
 compiler = ["black", "isort", "GitPython", "grpc-stubs", "grpcio-tools", "mypy-protobuf"]
@@ -64,7 +64,7 @@ show_traceback = true
 [tool.pyright]
 exclude = ["**/__pycache__"]
 ignore = ["grpc-stubs"]
-include = ["cbiproto", "cbiprototoolz"]
+include = ["cbproto"]
 stubPath = "./typings"
 typeCheckingMode = "basic"
 

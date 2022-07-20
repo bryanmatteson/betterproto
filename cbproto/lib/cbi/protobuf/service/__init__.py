@@ -5,16 +5,16 @@
 # pyright: ignore
 # mypy: ignore-errors
 # fmt: off
-# plugin: python-cbiproto
+# plugin: python-cbproto
 # sources: cbi/protobuf/service.proto
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 
-import cbiproto
+import cbproto
 
 
 @dataclass(eq=False, repr=False)
-class ServiceOptions(cbiproto.Message):
-    internal: bool = cbiproto.bool_field(1)
+class ServiceOptions(cbproto.Message):
+    internal: bool = cbproto.bool_field(1)

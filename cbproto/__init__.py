@@ -114,7 +114,7 @@ class Message(ABC):
     parsers to go between the Python, binary and JSON representations of the message.
     """
 
-    _cbiproto_meta: ClassVar[Optional[ProtoClassMetadata]] = None
+    _cbproto_meta: ClassVar[Optional[ProtoClassMetadata]] = None
     _serialized_on_wire: bool
     _unknown_fields: bytes
     _group_current: Dict[str, str]
@@ -125,7 +125,7 @@ class Message(ABC):
 
         # Set current field of each group after `__init__` has already been run.
         group_current: Dict[str, Optional[str]] = {}
-        for field_name, meta in self.cbiproto_meta.meta_by_field_name.items():
+        for field_name, meta in self.cbproto_meta.meta_by_field_name.items():
 
             if meta.group:
                 group_current.setdefault(meta.group)
@@ -151,15 +151,15 @@ class Message(ABC):
         if type(self) is not type(other):
             return False
 
-        for field_name in self.cbiproto_meta.meta_by_field_name:
+        for field_name in self.cbproto_meta.meta_by_field_name:
             self_val = self.__raw_get(field_name)
             other_val = other.__raw_get(field_name)
             if self_val is UNSET:
                 if other_val is UNSET:
                     continue
-                self_val = self.cbiproto_meta.get_field_default(field_name)
+                self_val = self.cbproto_meta.get_field_default(field_name)
             elif other_val is UNSET:
-                other_val = other.cbiproto_meta.get_field_default(field_name)
+                other_val = other.cbproto_meta.get_field_default(field_name)
 
             if self_val != other_val:
                 # We consider two nan values to be the same for the
@@ -180,7 +180,7 @@ class Message(ABC):
     def __repr__(self) -> str:
         parts = [
             f"{field_name}={value!r}"
-            for field_name in self.cbiproto_meta.sorted_field_names
+            for field_name in self.cbproto_meta.sorted_field_names
             for value in (self.__raw_get(field_name),)
             if value is not UNSET
         ]
@@ -197,7 +197,7 @@ class Message(ABC):
             if value is not UNSET:
                 return value
 
-            value = self.cbiproto_meta.get_field_default(name)
+            value = self.cbproto_meta.get_field_default(name)
             super().__setattr__(name, value)
             return value
 
@@ -206,9 +206,9 @@ class Message(ABC):
             self.__dict__["_serialized_on_wire"] = True
 
         if hasattr(self, "_group_current"):  # __post_init__ had already run
-            if attr in self.cbiproto_meta.oneof_group_by_field:
-                group = self.cbiproto_meta.oneof_group_by_field[attr]
-                for field in self.cbiproto_meta.oneof_field_by_group[group]:
+            if attr in self.cbproto_meta.oneof_group_by_field:
+                group = self.cbproto_meta.oneof_group_by_field[attr]
+                for field in self.cbproto_meta.oneof_field_by_group[group]:
                     if field.name == attr:
                         self._group_current[group] = field.name
                     else:
@@ -218,13 +218,13 @@ class Message(ABC):
 
     def __bool__(self) -> bool:
         return any(
-            self.__raw_get(field_name) not in (UNSET, self.cbiproto_meta.get_field_default(field_name))
-            for field_name in self.cbiproto_meta.meta_by_field_name
+            self.__raw_get(field_name) not in (UNSET, self.cbproto_meta.get_field_default(field_name))
+            for field_name in self.cbproto_meta.meta_by_field_name
         )
 
     def __deepcopy__(self: MessageT, _: Any = {}) -> MessageT:
         kwargs = {}
-        for name in self.cbiproto_meta.sorted_field_names:
+        for name in self.cbproto_meta.sorted_field_names:
             value = self.__raw_get(name)
             if value is not UNSET:
                 kwargs[name] = deepcopy(value)
@@ -234,15 +234,15 @@ class Message(ABC):
         return meta.group is not None and self._group_current.get(meta.group) == field_name
 
     def is_set(self, name: str) -> bool:
-        default = UNSET if not self.cbiproto_meta.meta_by_field_name[name].optional else None
+        default = UNSET if not self.cbproto_meta.meta_by_field_name[name].optional else None
         return self.__raw_get(name) is not default
 
     @classmethod
     @property
-    def cbiproto_meta(cls) -> ProtoClassMetadata:
-        if not cls._cbiproto_meta:
-            cls._cbiproto_meta = ProtoClassMetadata(cls)
-        return cls._cbiproto_meta
+    def cbproto_meta(cls) -> ProtoClassMetadata:
+        if not cls._cbproto_meta:
+            cls._cbproto_meta = ProtoClassMetadata(cls)
+        return cls._cbproto_meta
 
     @classmethod
     def parse_raw(cls, s: bytes) -> Self:
@@ -436,8 +436,8 @@ def serialize_to_pydict(message: Message, casing: Casing = "camel", include_defa
     casing_func = get_casing_fn(casing)
 
     output: Dict[str, Any] = {}
-    defaults = message.cbiproto_meta.default_gen
-    for field_name, meta in message.cbiproto_meta.meta_by_field_name.items():
+    defaults = message.cbproto_meta.default_gen
+    for field_name, meta in message.cbproto_meta.meta_by_field_name.items():
         field_is_repeated = defaults[field_name] is list
         value = getattr(message, field_name)
         cased_name = casing_func(field_name).rstrip("_")  # type: ignore
@@ -478,7 +478,7 @@ def serialize_to_pydict(message: Message, casing: Casing = "camel", include_defa
             if value or include_defaults:
                 output[cased_name] = value
         elif (
-            value != message.cbiproto_meta.get_field_default(field_name)
+            value != message.cbproto_meta.get_field_default(field_name)
             or include_defaults
             or message._include_default_value_for_oneof(field_name=field_name, meta=meta)
         ):
@@ -507,7 +507,7 @@ def deserialize_from_pydict(class_or_instance: Union[MessageT, Type[MessageT]], 
     message._serialized_on_wire = True
     for key in value:
         field_name = safe_snake_case(key)
-        meta = message.cbiproto_meta.meta_by_field_name.get(field_name)
+        meta = message.cbproto_meta.meta_by_field_name.get(field_name)
         if not meta:
             continue
 
@@ -515,7 +515,7 @@ def deserialize_from_pydict(class_or_instance: Union[MessageT, Type[MessageT]], 
             if meta.proto_type == TYPE_MESSAGE:
                 v = getattr(message, field_name)
                 if isinstance(v, list):
-                    cls = message_cls.cbiproto_meta.cls_by_field[field_name]
+                    cls = message_cls.cbproto_meta.cls_by_field[field_name]
                     cls = cast(Type[MessageT], cls)
                     for item in value[key]:
                         v.append(deserialize_from_pydict(cls, item))
@@ -532,7 +532,7 @@ def deserialize_from_pydict(class_or_instance: Union[MessageT, Type[MessageT]], 
                     v = deserialize_from_pydict(v, value[key])
             elif meta.map_types and meta.map_types[1] == TYPE_MESSAGE:
                 v = getattr(message, field_name)
-                cls = message_cls.cbiproto_meta.cls_by_field[f"{field_name}.value"]
+                cls = message_cls.cbproto_meta.cls_by_field[f"{field_name}.value"]
                 cls = cast(Type[MessageT], cls)
 
                 for k in value[key]:
@@ -552,8 +552,8 @@ def serialize_to_dict(
 
     output: Dict[str, Any] = {}
     field_types = _type_hints(type(message))
-    defaults = message.cbiproto_meta.default_gen
-    for field_name, meta in message.cbiproto_meta.meta_by_field_name.items():
+    defaults = message.cbproto_meta.default_gen
+    for field_name, meta in message.cbproto_meta.meta_by_field_name.items():
         field_is_repeated = defaults[field_name] is list
         value = getattr(message, field_name)
         cased_name = casing_func(field_name).rstrip("_")  # type: ignore
@@ -577,7 +577,7 @@ def serialize_to_dict(
                     output[cased_name] = value
             elif field_is_repeated:
                 # Convert each item.
-                cls = message.cbiproto_meta.cls_by_field[field_name]
+                cls = message.cbproto_meta.cls_by_field[field_name]
                 if cls == datetime:
                     value = [_Timestamp.timestamp_to_json(i) for i in value]
                 elif cls == timedelta:
@@ -605,7 +605,7 @@ def serialize_to_dict(
             if value or include_defaults:
                 output[cased_name] = output_map
         elif (
-            value != message.cbiproto_meta.get_field_default(field_name)
+            value != message.cbproto_meta.get_field_default(field_name)
             or include_defaults
             or message._include_default_value_for_oneof(field_name=field_name, meta=meta)
         ):
@@ -672,14 +672,14 @@ def deserialize_from_dict(class_or_instance: Union[MessageT, Type[MessageT]], /,
     message._serialized_on_wire = True
     for key in value:
         field_name = safe_snake_case(key)
-        meta = message.cbiproto_meta.meta_by_field_name.get(field_name)
+        meta = message.cbproto_meta.meta_by_field_name.get(field_name)
         if not meta:
             continue
 
         if value[key] is not None:
             if meta.proto_type == TYPE_MESSAGE:
                 v = getattr(message, field_name)
-                cls = message_cls.cbiproto_meta.cls_by_field[field_name]
+                cls = message_cls.cbproto_meta.cls_by_field[field_name]
                 cls = cast(Type[Message], cls)
 
                 if isinstance(v, list):
@@ -703,7 +703,7 @@ def deserialize_from_dict(class_or_instance: Union[MessageT, Type[MessageT]], /,
                     v = deserialize_from_dict(v, value[key])
             elif meta.map_types and meta.map_types[1] == TYPE_MESSAGE:
                 v = getattr(message, field_name)
-                cls = message_cls.cbiproto_meta.cls_by_field[f"{field_name}.value"]
+                cls = message_cls.cbproto_meta.cls_by_field[f"{field_name}.value"]
                 cls = cast(Type[Message], cls)
                 for k in value[key]:
                     v[k] = deserialize_from_dict(cls, value[key][k])
@@ -720,7 +720,7 @@ def deserialize_from_dict(class_or_instance: Union[MessageT, Type[MessageT]], /,
                     else:
                         v = b64decode(value[key])
                 elif meta.proto_type == TYPE_ENUM:
-                    enum_cls = message_cls.cbiproto_meta.cls_by_field[field_name]
+                    enum_cls = message_cls.cbproto_meta.cls_by_field[field_name]
                     enum_cls = cast(Type[Enum], enum_cls)
                     if isinstance(v, list):
                         v = [enum_cls.from_string(e) for e in v]
@@ -742,7 +742,7 @@ def serialize_to_bytes(message: Message) -> bytes:
     Get the binary encoded Protobuf representation of this message instance.
     """
     output = bytearray()
-    for field_name, meta in message.cbiproto_meta.meta_by_field_name.items():
+    for field_name, meta in message.cbproto_meta.meta_by_field_name.items():
         value = getattr(message, field_name)
 
         if value is None:
@@ -765,7 +765,7 @@ def serialize_to_bytes(message: Message) -> bytes:
 
         include_default_value_for_oneof = message._include_default_value_for_oneof(field_name=field_name, meta=meta)
 
-        if value == message.cbiproto_meta.get_field_default(field_name) and not (
+        if value == message.cbproto_meta.get_field_default(field_name) and not (
             selected_in_group or serialize_empty or include_default_value_for_oneof
         ):
             # Default (zero) values are not serialized. Two exceptions are
@@ -837,7 +837,7 @@ def deserialize_from_bytes(cls: Union[MessageT, Type[MessageT]], /, data: bytes)
         message_cls = type(message)
 
     message._serialized_on_wire = True
-    proto_meta = message_cls.cbiproto_meta
+    proto_meta = message_cls.cbproto_meta
     for parsed in parse_fields(data):
         field_name = proto_meta.field_name_by_number.get(parsed.number)
         if not field_name:

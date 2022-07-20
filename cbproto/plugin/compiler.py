@@ -23,7 +23,7 @@ from typing import (
 
 from typing_extensions import TypeAlias, dataclass_transform
 
-import cbiproto
+import cbproto
 
 from .._casing import sanitize_name
 from ..lib.google.protobuf import (
@@ -47,15 +47,15 @@ from ..lib.google.protobuf.compiler import CodeGeneratorRequest, CodeGeneratorRe
 from .utils import Formatter, TypeManager, pythonize_class_name, pythonize_field_name, pythonize_method_name
 
 try:
-    # cbiproto[compiler] specific dependencies
+    # cbproto[compiler] specific dependencies
     import black
     import isort.api
 except ImportError as err:
     print(
         "\033[31m"
-        f"Unable to import `{err.name}` from cbiproto plugin! "
-        "Please ensure that you've installed cbiproto as "
-        '`pip install "cbiproto[compiler]"` so that compiler dependencies '
+        f"Unable to import `{err.name}` from cbproto plugin! "
+        "Please ensure that you've installed cbproto as "
+        '`pip install "cbproto[compiler]"` so that compiler dependencies '
         "are included."
         "\033[0m"
     )
@@ -248,7 +248,7 @@ class Compiler:
                 lines_after_imports=2,
                 quiet=True,
                 force_grid_wrap=2,
-                known_third_party=["grpc", "cbiproto"],
+                known_third_party=["grpc", "cbproto"],
             )
             code = black.format_str(code, mode=black.FileMode(line_length=120))
             code = "\n".join((header, code))
@@ -384,7 +384,7 @@ class ProtoMessage(ProtoContent):
         formatter = Formatter()
         dc = self.file.types.from_import("dataclasses", "dataclass")
         formatter.writeline(f"@{dc}(eq=False, repr=False)")
-        msg_type = self.file.types.module_import("cbiproto", "Message")
+        msg_type = self.file.types.module_import("cbproto", "Message")
 
         formatter.writeline(f"class {self.py_name}({msg_type}):")
         with formatter.block_with_comment(self.comment):
@@ -426,7 +426,7 @@ class ProtoField(ProtoContent):
 
     @property
     def is_one_of_field(self) -> bool:
-        name, _ = cbiproto.which_one_of(self.model, "oneof_index")
+        name, _ = cbproto.which_one_of(self.model, "oneof_index")
         return name == "oneof_index"
 
     @property
@@ -511,7 +511,7 @@ class ProtoField(ProtoContent):
             return "None"
 
     @property
-    def cbiproto_field_args(self) -> List[str]:
+    def cbproto_field_args(self) -> List[str]:
         args: List[str] = []
 
         if self.is_map_field:
@@ -523,15 +523,15 @@ class ProtoField(ProtoContent):
                 proto_v_type = FieldDescriptorProto.Type(value.model.type).name
                 args.extend(
                     [
-                        self.file.types.from_import("cbiproto.const", proto_k_type),
-                        self.file.types.from_import("cbiproto.const", proto_v_type),
+                        self.file.types.from_import("cbproto.const", proto_k_type),
+                        self.file.types.from_import("cbproto.const", proto_v_type),
                     ]
                 )
 
         if match_wrapper := re.match(r"\.google\.protobuf\.(.+)Value$", self.model.type_name):
             wrapped_type = "TYPE_" + match_wrapper.group(1).upper()
-            if hasattr(cbiproto, wrapped_type):
-                typ = self.file.types.module_import(f"cbiproto", wrapped_type)
+            if hasattr(cbproto, wrapped_type):
+                typ = self.file.types.module_import(f"cbproto", wrapped_type)
                 args.append(f"wraps={typ}")
 
         if self.optional:
@@ -543,13 +543,13 @@ class ProtoField(ProtoContent):
         return args
 
     def compile(self, ctx: CompilationContext) -> str:
-        field_args = ", ".join([""] + self.cbiproto_field_args)
+        field_args = ", ".join([""] + self.cbproto_field_args)
 
-        fn = self.file.types.module_import("cbiproto", f"{self.field_type}_field")
-        cbiproto_field_type = f"{fn}({self.model.number}{field_args})"
+        fn = self.file.types.module_import("cbproto", f"{self.field_type}_field")
+        cbproto_field_type = f"{fn}({self.model.number}{field_args})"
         if comment := self.comment:
             comment = f"\n{comment}\n"
-        return f"{self.py_name}: {self.annotation} = {cbiproto_field_type}{comment}"
+        return f"{self.py_name}: {self.annotation} = {cbproto_field_type}{comment}"
 
 
 @dataclass
@@ -566,7 +566,7 @@ class ProtoService(ProtoContent):
         return pythonize_class_name(self.name)
 
     def compile_client(self, ctx: CompilationContext) -> str:
-        stub_base = "cbiproto.aio" if ctx.is_async else "cbiproto"
+        stub_base = "cbproto.aio" if ctx.is_async else "cbproto"
         stub_name = self.file.types.module_import(stub_base, "ServiceStub")
 
         client_stub = Formatter()
@@ -579,7 +579,7 @@ class ProtoService(ProtoContent):
         return str(client_stub)
 
     def compile_server(self, ctx: CompilationContext) -> str:
-        stub_base = "cbiproto.aio" if ctx.is_async else "cbiproto"
+        stub_base = "cbproto.aio" if ctx.is_async else "cbproto"
         stub_name = self.file.types.module_import(stub_base, "ServiceBase")
 
         server_stub = Formatter()
@@ -588,9 +588,9 @@ class ProtoService(ProtoContent):
             for method in self.methods.values():
                 server_stub.writelines(method.compile_server(ctx))
 
-            handler_type = self.file.types.module_import("cbiproto", "Handler")
+            handler_type = self.file.types.module_import("cbproto", "Handler")
             typing_dict = self.file.types.dict_of("str", handler_type)
-            cardinality_type = self.file.types.module_import("cbiproto", "Cardinality")
+            cardinality_type = self.file.types.module_import("cbproto", "Cardinality")
 
             server_stub.writeline(f"def __mapping__(self) -> {typing_dict}:")
             with server_stub.block():
@@ -624,8 +624,8 @@ class ProtoMethod(ProtoContent):
         return f"/{package_part}{self.parent.name}/{self.name}"
 
     @property
-    def cardinality(self) -> cbiproto.Cardinality:
-        return cbiproto.Cardinality.of(self.model.client_streaming, self.model.server_streaming)
+    def cardinality(self) -> cbproto.Cardinality:
+        return cbproto.Cardinality.of(self.model.client_streaming, self.model.server_streaming)
 
     @property
     def py_input_message_type(self) -> str:
@@ -643,7 +643,7 @@ class ProtoMethod(ProtoContent):
         input_type = self.py_input_message_type
         output_type = self.py_output_message_type
 
-        metadata_like = self.file.types.module_import("cbiproto.types", "MetadataLike")
+        metadata_like = self.file.types.module_import("cbproto.types", "MetadataLike")
         grpc_creds_type = self.file.types.module_import("grpc", "CallCredentials")
 
         if self.model.client_streaming:
@@ -725,7 +725,7 @@ class ProtoEnum(ProtoContent):
 
     def compile(self, ctx: CompilationContext) -> str:
         formatter = Formatter()
-        enum_type = self.file.types.module_import("cbiproto", "Enum")
+        enum_type = self.file.types.module_import("cbproto", "Enum")
         formatter.writeline(f"class {self.py_name}({enum_type}):")
         with formatter.block_with_comment(self.comment):
             for entry in self.entries:
@@ -753,8 +753,8 @@ def build_file(f: FileDescriptorProto) -> ProtoFile:
     for sci_loc in f.source_code_info.location:
         path_to_loc[tuple(sci_loc.path)] = sci_loc
 
-    def _num(obj: cbiproto.Message, name: str) -> int:
-        return obj.cbiproto_meta.get_field_number(name)
+    def _num(obj: cbproto.Message, name: str) -> int:
+        return obj.cbproto_meta.get_field_number(name)
 
     def _traverse(parent: Optional[_ProtoParent], path: List[int], items: List[Any], prefix: str = "") -> Iterator[Any]:
         for idx, item in enumerate(items):
