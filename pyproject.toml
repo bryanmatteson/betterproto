@@ -3,7 +3,7 @@ authors = ["bryan.matteson <bryan.matteson@cbinsights.com>"]
 description = ""
 name = "cbproto"
 packages = [
-  {include = "cbproto"},
+  {include = "cbproto", from = "src"},
   {include = "grpc-stubs"},
 ]
 version = "0.0.1"
@@ -64,7 +64,7 @@ show_traceback = true
 [tool.pyright]
 exclude = ["**/__pycache__"]
 ignore = ["grpc-stubs"]
-include = ["cbproto"]
+include = ["src/cbproto"]
 stubPath = "./typings"
 typeCheckingMode = "basic"
 
