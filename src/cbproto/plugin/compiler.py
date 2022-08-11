@@ -82,7 +82,6 @@ if TYPE_CHECKING:
     ) -> Any:
         ...
 
-
 else:
     from dataclasses import dataclass, field
 
@@ -689,8 +688,6 @@ class ProtoMethod(ProtoContent):
             input_type = self.file.types.iterable_of(input_type, ctx.is_async)
         if self.model.server_streaming:
             output_type = self.file.types.iterable_of(output_type, ctx.is_async)
-        elif ctx.is_async:
-            output_type = self.file.types.awaitable_of(output_type)
 
         grpcmod = "grpc.aio" if ctx.is_async else "grpc"
         formatter = Formatter()
