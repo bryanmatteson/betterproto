@@ -368,7 +368,10 @@ def _get_cls_by_field(cls: Type[Message], fields: Iterable[dataclasses.Field]) -
             vt = _cls_for(cls, field, index=1)
             field_cls[field.name] = dataclasses.make_dataclass(
                 "Entry",
-                [("key", kt, proto_field(1, meta.map_types[0])), ("value", vt, proto_field(2, meta.map_types[1])),],
+                [
+                    ("key", kt, proto_field(1, meta.map_types[0])),
+                    ("value", vt, proto_field(2, meta.map_types[1])),
+                ],
                 bases=(Message,),
             )
             field_cls[f"{field.name}.value"] = vt
@@ -428,7 +431,7 @@ def _cls_for(cls, field: dataclasses.Field, index: int = 0) -> Type:
 def _is_optional(typ: Type) -> bool:
     if get_origin(typ) is Union:
         args = get_args(typ)
-        return len(args) == 2 and None in args
+        return len(args) == 2 and type(None) in args
     return False
 
 
@@ -786,7 +789,12 @@ def serialize_to_bytes(message: Message) -> bytes:
             else:
                 for item in value:
                     output += (
-                        _serialize_single(meta.number, meta.proto_type, item, wraps=meta.wraps or "",)
+                        _serialize_single(
+                            meta.number,
+                            meta.proto_type,
+                            item,
+                            wraps=meta.wraps or "",
+                        )
                         # if it's an empty message it still needs to be represented
                         # as an item in the repeated list
                         or b"\n\x00"
@@ -971,7 +979,14 @@ def encode_varint(value: int) -> bytes:
 
 def _preprocess_single(proto_type: str, wraps: str, value: Any) -> bytes:
     """Adjusts values before serialization."""
-    if proto_type in (TYPE_ENUM, TYPE_BOOL, TYPE_INT32, TYPE_INT64, TYPE_UINT32, TYPE_UINT64,):
+    if proto_type in (
+        TYPE_ENUM,
+        TYPE_BOOL,
+        TYPE_INT32,
+        TYPE_INT64,
+        TYPE_UINT32,
+        TYPE_UINT64,
+    ):
         return encode_varint(value)
     elif proto_type in (TYPE_SINT32, TYPE_SINT64):
         # Handle zig-zag encoding.
@@ -1003,7 +1018,12 @@ def _preprocess_single(proto_type: str, wraps: str, value: Any) -> bytes:
 
 
 def _serialize_single(
-    field_number: int, proto_type: str, value: Any, *, serialize_empty: bool = False, wraps: str = "",
+    field_number: int,
+    proto_type: str,
+    value: Any,
+    *,
+    serialize_empty: bool = False,
+    wraps: str = "",
 ) -> bytes:
     """Serializes a single field and value."""
     value = _preprocess_single(proto_type, wraps, value)
