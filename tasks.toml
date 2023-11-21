@@ -1,16 +1,16 @@
 
 [tool.poe.tasks.brew_prefix]
-args = [{name = "package", positional = true}]
+args = [{ name = "package", positional = true }]
 shell = "brew --prefix $package | tr -d '\n'"
 
 [tool.poe.tasks.compile_google_protobuf]
-args = [{name = "header_dir", positional = true, required = true}]
-help = "Regenerate the types in cbproto.lib"
+args = [{ name = "header_dir", positional = true, required = true }]
+help = "Regenerate the types in betterproto.lib"
 script = """
     cbproto_tools.compile.main:run(
-        output="cbproto/lib",
-        files=[header_dir+"/google/protobuf", "cbproto/protos"],
-        proto_dir="cbproto/protos",
+        output="betterproto/lib",
+        files=[header_dir+"/google/protobuf", "betterproto/protos"],
+        proto_dir="betterproto/protos",
         includes=[header_dir],
         options=["INCLUDE_GOOGLE"],
     )
@@ -18,4 +18,4 @@ script = """
 
 [tool.poe.tasks.generate_lib]
 sequence = ["compile_google_protobuf ${PROTOBUF_HEADERS}/include"]
-uses = {PROTOBUF_HEADERS = "brew_prefix protobuf"}
+uses = { PROTOBUF_HEADERS = "brew_prefix protobuf" }

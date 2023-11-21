@@ -5,7 +5,7 @@
 # pyright: ignore
 # mypy: ignore-errors
 # fmt: off
-# plugin: python-cbproto
+# plugin: python-betterproto
 # sources: google/protobuf/compiler/plugin.proto
 
 from __future__ import annotations
@@ -13,18 +13,18 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import List
 
-import cbproto
-import cbproto.lib.google.protobuf as cbproto_lib_google_protobuf
+import betterproto
+import betterproto.lib.google.protobuf as cbproto_lib_google_protobuf
 
 
 @dataclass(eq=False, repr=False)
-class Version(cbproto.Message):
+class Version(betterproto.Message):
     """The version number of protocol compiler."""
 
-    major: int = cbproto.int32_field(1)
-    minor: int = cbproto.int32_field(2)
-    patch: int = cbproto.int32_field(3)
-    suffix: str = cbproto.string_field(4)
+    major: int = betterproto.int32_field(1)
+    minor: int = betterproto.int32_field(2)
+    patch: int = betterproto.int32_field(3)
+    suffix: str = betterproto.string_field(4)
     """
     A suffix for alpha, beta or rc release, e.g., "alpha-1", "rc2". It should
     be empty for mainline stable releases.
@@ -32,20 +32,20 @@ class Version(cbproto.Message):
 
 
 @dataclass(eq=False, repr=False)
-class CodeGeneratorRequest(cbproto.Message):
+class CodeGeneratorRequest(betterproto.Message):
     """An encoded CodeGeneratorRequest is written to the plugin's stdin."""
 
-    file_to_generate: List[str] = cbproto.string_field(1)
+    file_to_generate: List[str] = betterproto.string_field(1)
     """
     The .proto files that were explicitly listed on the command-line.  The
     code generator should generate code only for these files.  Each file's
     descriptor will be included in proto_file, below.
     """
 
-    parameter: str = cbproto.string_field(2)
+    parameter: str = betterproto.string_field(2)
     """The generator parameter passed on the command-line."""
 
-    proto_file: List["cbproto_lib_google_protobuf.FileDescriptorProto"] = cbproto.message_field(15)
+    proto_file: List["cbproto_lib_google_protobuf.FileDescriptorProto"] = betterproto.message_field(15)
     """
     FileDescriptorProtos for all files in files_to_generate and everything
     they import.  The files will appear in topological order, so each file
@@ -63,15 +63,15 @@ class CodeGeneratorRequest(cbproto.Message):
     fully qualified.
     """
 
-    compiler_version: "Version" = cbproto.message_field(3)
+    compiler_version: "Version" = betterproto.message_field(3)
     """The version number of protocol compiler."""
 
 
 @dataclass(eq=False, repr=False)
-class CodeGeneratorResponse(cbproto.Message):
+class CodeGeneratorResponse(betterproto.Message):
     """The plugin writes an encoded CodeGeneratorResponse to stdout."""
 
-    error: str = cbproto.string_field(1)
+    error: str = betterproto.string_field(1)
     """
     Error message.  If non-empty, code generation failed.  The plugin process
     should exit with status code zero even if it reports an error in this way.
@@ -83,25 +83,25 @@ class CodeGeneratorResponse(cbproto.Message):
     exiting with a non-zero status code.
     """
 
-    supported_features: int = cbproto.uint64_field(2)
+    supported_features: int = betterproto.uint64_field(2)
     """
     A bitmask of supported features that the code generator supports.
     This is a bitwise "or" of values from the Feature enum.
     """
 
-    file: List["CodeGeneratorResponse.File"] = cbproto.message_field(15)
+    file: List["CodeGeneratorResponse.File"] = betterproto.message_field(15)
 
-    class Feature(cbproto.Enum):
+    class Feature(betterproto.Enum):
         """Sync with code_generator.h."""
 
         FEATURE_NONE = 0
         FEATURE_PROTO3_OPTIONAL = 1
 
     @dataclass(eq=False, repr=False)
-    class File(cbproto.Message):
+    class File(betterproto.Message):
         """Represents a single generated file."""
 
-        name: str = cbproto.string_field(1)
+        name: str = betterproto.string_field(1)
         """
         The file name, relative to the output directory.  The name must not
         contain "." or ".." components and must be relative, not be absolute (so,
@@ -116,7 +116,7 @@ class CodeGeneratorResponse(cbproto.Message):
         CodeGeneratorResponse before writing files to disk.
         """
 
-        insertion_point: str = cbproto.string_field(2)
+        insertion_point: str = betterproto.string_field(2)
         """
         If non-empty, indicates that the named file should already exist, and the
         content here is to be inserted into that file at a defined insertion
@@ -157,10 +157,10 @@ class CodeGeneratorResponse(cbproto.Message):
         If |insertion_point| is present, |name| must also be present.
         """
 
-        content: str = cbproto.string_field(15)
+        content: str = betterproto.string_field(15)
         """The file contents."""
 
-        generated_code_info: "cbproto_lib_google_protobuf.GeneratedCodeInfo" = cbproto.message_field(16)
+        generated_code_info: "cbproto_lib_google_protobuf.GeneratedCodeInfo" = betterproto.message_field(16)
         """
         Information describing the file content being inserted. If an insertion
         point is used, this information will be appropriately offset and inserted

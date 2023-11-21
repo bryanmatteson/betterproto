@@ -95,9 +95,9 @@ class TypeManager:
         compiling_google_protobuf = self.package == ("google", "protobuf")
         importing_google_protobuf = py_package == ("google", "protobuf")
         if importing_google_protobuf and not compiling_google_protobuf:
-            py_package = ("cbproto", "lib") + py_package
+            py_package = ("betterproto", "lib") + py_package
 
-        if py_package[:1] == ("cbproto",):
+        if py_package[:1] == ("betterproto",):
             return self.reference_absolute(py_package, py_type)
 
         if py_package == self.package:
@@ -224,10 +224,12 @@ def monkey_patch_oneof_index():
     monkey patches the generated classes after the fact to force this behaviour.
     """
     object.__setattr__(
-        google_protobuf.FieldDescriptorProto.__dataclass_fields__["oneof_index"].metadata["cbproto"],
+        google_protobuf.FieldDescriptorProto.__dataclass_fields__["oneof_index"].metadata["betterproto"],
         "group",
         "oneof_index",
     )
     object.__setattr__(
-        google_protobuf.Field.__dataclass_fields__["oneof_index"].metadata["cbproto"], "group", "oneof_index",
+        google_protobuf.Field.__dataclass_fields__["oneof_index"].metadata["betterproto"],
+        "group",
+        "oneof_index",
     )

@@ -23,7 +23,7 @@ from typing import (
 
 from typing_extensions import TypeAlias, dataclass_transform
 
-import cbproto
+import betterproto
 
 from .._casing import sanitize_name
 from ..lib.google.protobuf import (
@@ -47,22 +47,21 @@ from ..lib.google.protobuf.compiler import CodeGeneratorRequest, CodeGeneratorRe
 from .utils import Formatter, TypeManager, pythonize_class_name, pythonize_field_name, pythonize_method_name
 
 try:
-    # cbproto[compiler] specific dependencies
+    # betterproto[compiler] specific dependencies
     import black
     import isort.api
 except ImportError as err:
     print(
         "\033[31m"
-        f"Unable to import `{err.name}` from cbproto plugin! "
-        "Please ensure that you've installed cbproto as "
-        '`pip install "cbproto[compiler]"` so that compiler dependencies '
+        f"Unable to import `{err.name}` from betterproto plugin! "
+        "Please ensure that you've installed betterproto as "
+        '`pip install "betterproto[compiler]"` so that compiler dependencies '
         "are included."
         "\033[0m"
     )
     raise SystemExit(1)
 
 if TYPE_CHECKING:
-
     from dataclasses import field
 
     @dataclass_transform(kw_only_default=True, field_specifiers=(field,))
@@ -247,7 +246,7 @@ class Compiler:
                 lines_after_imports=2,
                 quiet=True,
                 force_grid_wrap=2,
-                known_third_party=["grpc", "cbproto"],
+                known_third_party=["grpc", "betterproto"],
             )
             code = black.format_str(code, mode=black.FileMode(line_length=120))
             code = "\n".join((header, code))
@@ -383,7 +382,7 @@ class ProtoMessage(ProtoContent):
         formatter = Formatter()
         dc = self.file.types.from_import("dataclasses", "dataclass")
         formatter.writeline(f"@{dc}(eq=False, repr=False)")
-        msg_type = self.file.types.module_import("cbproto", "Message")
+        msg_type = self.file.types.module_import("betterproto", "Message")
 
         formatter.writeline(f"class {self.py_name}({msg_type}):")
         with formatter.block_with_comment(self.comment):
@@ -425,7 +424,7 @@ class ProtoField(ProtoContent):
 
     @property
     def is_one_of_field(self) -> bool:
-        name, _ = cbproto.which_one_of(self.model, "oneof_index")
+        name, _ = betterproto.which_one_of(self.model, "oneof_index")
         return name == "oneof_index"
 
     @property
@@ -522,15 +521,15 @@ class ProtoField(ProtoContent):
                 proto_v_type = FieldDescriptorProto.Type(value.model.type).name
                 args.extend(
                     [
-                        self.file.types.from_import("cbproto.const", proto_k_type),
-                        self.file.types.from_import("cbproto.const", proto_v_type),
+                        self.file.types.from_import("betterproto.const", proto_k_type),
+                        self.file.types.from_import("betterproto.const", proto_v_type),
                     ]
                 )
 
         if match_wrapper := re.match(r"\.google\.protobuf\.(.+)Value$", self.model.type_name):
             wrapped_type = "TYPE_" + match_wrapper.group(1).upper()
-            if hasattr(cbproto, wrapped_type):
-                typ = self.file.types.module_import(f"cbproto", wrapped_type)
+            if hasattr(betterproto, wrapped_type):
+                typ = self.file.types.module_import(f"betterproto", wrapped_type)
                 args.append(f"wraps={typ}")
 
         if self.optional:
@@ -544,7 +543,7 @@ class ProtoField(ProtoContent):
     def compile(self, ctx: CompilationContext) -> str:
         field_args = ", ".join([""] + self.cbproto_field_args)
 
-        fn = self.file.types.module_import("cbproto", f"{self.field_type}_field")
+        fn = self.file.types.module_import("betterproto", f"{self.field_type}_field")
         cbproto_field_type = f"{fn}({self.model.number}{field_args})"
         if comment := self.comment:
             comment = f"\n{comment}\n"
@@ -565,7 +564,7 @@ class ProtoService(ProtoContent):
         return pythonize_class_name(self.name)
 
     def compile_client(self, ctx: CompilationContext) -> str:
-        stub_base = "cbproto.aio" if ctx.is_async else "cbproto"
+        stub_base = "betterproto.aio" if ctx.is_async else "betterproto"
         stub_name = self.file.types.module_import(stub_base, "ServiceStub")
 
         client_stub = Formatter()
@@ -578,7 +577,7 @@ class ProtoService(ProtoContent):
         return str(client_stub)
 
     def compile_server(self, ctx: CompilationContext) -> str:
-        stub_base = "cbproto.aio" if ctx.is_async else "cbproto"
+        stub_base = "betterproto.aio" if ctx.is_async else "betterproto"
         stub_name = self.file.types.module_import(stub_base, "ServiceBase")
 
         server_stub = Formatter()
@@ -587,9 +586,9 @@ class ProtoService(ProtoContent):
             for method in self.methods.values():
                 server_stub.writelines(method.compile_server(ctx))
 
-            handler_type = self.file.types.module_import("cbproto", "Handler")
+            handler_type = self.file.types.module_import("betterproto", "Handler")
             typing_dict = self.file.types.dict_of("str", handler_type)
-            cardinality_type = self.file.types.module_import("cbproto", "Cardinality")
+            cardinality_type = self.file.types.module_import("betterproto", "Cardinality")
 
             server_stub.writeline(f"def __mapping__(self) -> {typing_dict}:")
             with server_stub.block():
@@ -623,8 +622,8 @@ class ProtoMethod(ProtoContent):
         return f"/{package_part}{self.parent.name}/{self.name}"
 
     @property
-    def cardinality(self) -> cbproto.Cardinality:
-        return cbproto.Cardinality.of(self.model.client_streaming, self.model.server_streaming)
+    def cardinality(self) -> betterproto.Cardinality:
+        return betterproto.Cardinality.of(self.model.client_streaming, self.model.server_streaming)
 
     @property
     def py_input_message_type(self) -> str:
@@ -642,7 +641,7 @@ class ProtoMethod(ProtoContent):
         input_type = self.py_input_message_type
         output_type = self.py_output_message_type
 
-        metadata_like = self.file.types.module_import("cbproto.types", "MetadataLike")
+        metadata_like = self.file.types.module_import("betterproto.types", "MetadataLike")
         grpc_creds_type = self.file.types.module_import("grpc", "CallCredentials")
 
         if self.model.client_streaming:
@@ -722,7 +721,7 @@ class ProtoEnum(ProtoContent):
 
     def compile(self, ctx: CompilationContext) -> str:
         formatter = Formatter()
-        enum_type = self.file.types.module_import("cbproto", "Enum")
+        enum_type = self.file.types.module_import("betterproto", "Enum")
         formatter.writeline(f"class {self.py_name}({enum_type}):")
         with formatter.block_with_comment(self.comment):
             for entry in self.entries:
@@ -750,7 +749,7 @@ def build_file(f: FileDescriptorProto) -> ProtoFile:
     for sci_loc in f.source_code_info.location:
         path_to_loc[tuple(sci_loc.path)] = sci_loc
 
-    def _num(obj: cbproto.Message, name: str) -> int:
+    def _num(obj: betterproto.Message, name: str) -> int:
         return obj.cbproto_meta.get_field_number(name)
 
     def _traverse(parent: Optional[_ProtoParent], path: List[int], items: List[Any], prefix: str = "") -> Iterator[Any]:

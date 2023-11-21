@@ -17,7 +17,7 @@ except ImportError as err:
     print(
         "\033[31m"
         f"Unable to import `{err.name}`!"
-        "Please ensure that you've installed cbproto with the [compiler] extra "
+        "Please ensure that you've installed betterproto with the [compiler] extra "
         "so that compiler dependencies are included."
         "\033[0m"
     )
@@ -137,7 +137,7 @@ def run(
 def main():
     """Entrypoint when running from command line"""
 
-    parser = argparse.ArgumentParser(prog="cbproto-compiler")
+    parser = argparse.ArgumentParser(prog="betterproto-compiler")
     parser.add_argument("-o", "--output", dest="output")
     parser.add_argument("-l", "--legacy", dest="legacy", action="store_true", default=False)
     parser.add_argument("-q", "--quiet", dest="quiet", action="store_true", default=False)
