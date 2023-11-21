@@ -509,7 +509,7 @@ class ProtoField(ProtoContent):
             return "None"
 
     @property
-    def cbproto_field_args(self) -> List[str]:
+    def betterproto_field_args(self) -> List[str]:
         args: List[str] = []
 
         if self.is_map_field:
@@ -541,13 +541,13 @@ class ProtoField(ProtoContent):
         return args
 
     def compile(self, ctx: CompilationContext) -> str:
-        field_args = ", ".join([""] + self.cbproto_field_args)
+        field_args = ", ".join([""] + self.betterproto_field_args)
 
         fn = self.file.types.module_import("betterproto", f"{self.field_type}_field")
-        cbproto_field_type = f"{fn}({self.model.number}{field_args})"
+        betterproto_field_type = f"{fn}({self.model.number}{field_args})"
         if comment := self.comment:
             comment = f"\n{comment}\n"
-        return f"{self.py_name}: {self.annotation} = {cbproto_field_type}{comment}"
+        return f"{self.py_name}: {self.annotation} = {betterproto_field_type}{comment}"
 
 
 @dataclass
@@ -750,7 +750,7 @@ def build_file(f: FileDescriptorProto) -> ProtoFile:
         path_to_loc[tuple(sci_loc.path)] = sci_loc
 
     def _num(obj: betterproto.Message, name: str) -> int:
-        return obj.cbproto_meta.get_field_number(name)
+        return obj.betterproto_meta.get_field_number(name)
 
     def _traverse(parent: Optional[_ProtoParent], path: List[int], items: List[Any], prefix: str = "") -> Iterator[Any]:
         for idx, item in enumerate(items):

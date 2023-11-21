@@ -69,22 +69,15 @@ def compile_protos(args: Args) -> int:  # noqa: C901
         temp_dir = Path(tmpdir)
 
         compilation = [f"-I{x}" for x in args.includes + [args.proto_dir]]
-        if args.legacy:
-            compilation += [
-                f"--python_out={temp_dir}",
-                f"--grpc_python_out={temp_dir}",
-                f"--mypy_out=readable_stubs:{temp_dir}",
-            ]
-        else:
-            compilation += [f"--python_cbproto_out={temp_dir}"]
-            for o in args.options:
-                compilation.append(f"--python_cbproto_opt={o}")
+        compilation += [f"--python_betterproto_out={temp_dir}"]
+        for o in args.options:
+            compilation.append(f"--python_betterproto_opt={o}")
 
-            if args.include_google:
-                compilation.append("--python_cbproto_opt=include_google")
+        if args.include_google:
+            compilation.append("--python_betterproto_opt=include_google")
 
-            if args.asynchronous:
-                compilation.append("--python_cbproto_opt=mode=async")
+        if args.asynchronous:
+            compilation.append("--python_betterproto_opt=mode=async")
 
         command = ["protoc"] + compilation + list(map(str, files))
         log("running command: ", " ".join(command))
@@ -139,7 +132,6 @@ def main():
 
     parser = argparse.ArgumentParser(prog="betterproto-compiler")
     parser.add_argument("-o", "--output", dest="output")
-    parser.add_argument("-l", "--legacy", dest="legacy", action="store_true", default=False)
     parser.add_argument("-q", "--quiet", dest="quiet", action="store_true", default=False)
     parser.add_argument("-a", "--async", dest="asynchronous", action="store_true", default=False)
     parser.add_argument("--include-google", dest="include_google", action="store_true", default=False)

@@ -6,7 +6,7 @@
 # mypy: ignore-errors
 # fmt: off
 # plugin: python-betterproto
-# sources: cbi/protobuf/service.proto
+# sources: internal/protobuf/service.proto
 
 from __future__ import annotations
 

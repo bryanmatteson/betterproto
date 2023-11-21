@@ -7,7 +7,7 @@ shell = "brew --prefix $package | tr -d '\n'"
 args = [{ name = "header_dir", positional = true, required = true }]
 help = "Regenerate the types in betterproto.lib"
 script = """
-    cbproto_tools.compile.main:run(
+    betterproto.toolz.compile.main:run(
         output="betterproto/lib",
         files=[header_dir+"/google/protobuf", "betterproto/protos"],
         proto_dir="betterproto/protos",

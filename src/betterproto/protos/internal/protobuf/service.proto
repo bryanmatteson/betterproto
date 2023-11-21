@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package cbi.protobuf.service;
+package internal.protobuf.service;
 
 import "google/protobuf/descriptor.proto";
 

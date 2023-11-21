@@ -25,7 +25,7 @@ pytest = "^5.2"
 
 [tool.poetry.scripts]
 betterproto-compile = "betterproto.toolz.compile.main:main"
-protoc-gen-python_cbproto = "betterproto.plugin:main"
+protoc-gen-python_betterproto = "betterproto.plugin:main"
 
 [tool.poetry.extras]
 compiler = ["black", "isort", "grpc-stubs", "grpcio-tools"]

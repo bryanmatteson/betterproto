@@ -5,7 +5,7 @@
 # pyright: ignore
 # mypy: ignore-errors
 # fmt: off
-# plugin: python-betterproto
+# plugin: python-cbproto
 # sources: google/protobuf/any.proto, google/protobuf/api.proto, google/protobuf/descriptor.proto, google/protobuf/duration.proto, google/protobuf/empty.proto, google/protobuf/field_mask.proto, google/protobuf/source_context.proto, google/protobuf/struct.proto, google/protobuf/timestamp.proto, google/protobuf/type.proto, google/protobuf/wrappers.proto
 
 from __future__ import annotations
@@ -14,12 +14,12 @@ import warnings
 from dataclasses import dataclass
 from typing import Dict, List, Optional
 
-import betterproto
+import cbproto
 
-from ...cbi.protobuf import service as __cbi_protobuf_service__
+from ...internal.protobuf import service as __cbi_protobuf_service__
 
 
-class Syntax(betterproto.Enum):
+class Syntax(cbproto.Enum):
     """The syntax in which a protocol buffer element is defined."""
 
     SYNTAX_PROTO2 = 0
@@ -29,7 +29,7 @@ class Syntax(betterproto.Enum):
     """Syntax `proto3`."""
 
 
-class NullValue(betterproto.Enum):
+class NullValue(cbproto.Enum):
     """
     `NullValue` is a singleton enumeration to represent the null value for the
     `Value` type union.
@@ -42,7 +42,7 @@ class NullValue(betterproto.Enum):
 
 
 @dataclass(eq=False, repr=False)
-class Timestamp(betterproto.Message):
+class Timestamp(cbproto.Message):
     """
     A Timestamp represents a point in time independent of any time zone or local
     calendar, encoded as a count of seconds and fractions of seconds at
@@ -137,14 +137,14 @@ class Timestamp(betterproto.Message):
     ) to obtain a formatter capable of generating timestamps in this format.
     """
 
-    seconds: int = betterproto.int64_field(1)
+    seconds: int = cbproto.int64_field(1)
     """
     Represents seconds of UTC time since Unix epoch
     1970-01-01T00:00:00Z. Must be from 0001-01-01T00:00:00Z to
     9999-12-31T23:59:59Z inclusive.
     """
 
-    nanos: int = betterproto.int32_field(2)
+    nanos: int = cbproto.int32_field(2)
     """
     Non-negative fractions of a second at nanosecond resolution. Negative
     second values with fractions must still have non-negative nanos values
@@ -154,7 +154,7 @@ class Timestamp(betterproto.Message):
 
 
 @dataclass(eq=False, repr=False)
-class FieldMask(betterproto.Message):
+class FieldMask(cbproto.Message):
     """
     `FieldMask` represents a set of symbolic field paths, for example:
 
@@ -357,18 +357,18 @@ class FieldMask(betterproto.Message):
     `INVALID_ARGUMENT` error if any path is unmappable.
     """
 
-    paths: List[str] = betterproto.string_field(1)
+    paths: List[str] = cbproto.string_field(1)
     """The set of field mask paths."""
 
 
 @dataclass(eq=False, repr=False)
-class SourceContext(betterproto.Message):
+class SourceContext(cbproto.Message):
     """
     `SourceContext` represents information about the source of a
     protobuf element, like the file in which it is defined.
     """
 
-    file_name: str = betterproto.string_field(1)
+    file_name: str = cbproto.string_field(1)
     """
     The path-qualified name of the .proto file that contained the associated
     protobuf element.  For example: `"google/protobuf/source_context.proto"`.
@@ -376,7 +376,7 @@ class SourceContext(betterproto.Message):
 
 
 @dataclass(eq=False, repr=False)
-class Any(betterproto.Message):
+class Any(cbproto.Message):
     """
     `Any` contains an arbitrary serialized protocol buffer message along with a
     URL that describes the type of the serialized message.
@@ -462,7 +462,7 @@ class Any(betterproto.Message):
         }
     """
 
-    type_url: str = betterproto.string_field(1)
+    type_url: str = cbproto.string_field(1)
     """
     A URL/resource name that uniquely identifies the type of the serialized
     protocol buffer message. This string must contain at least
@@ -493,74 +493,74 @@ class Any(betterproto.Message):
     used with implementation specific semantics.
     """
 
-    value: bytes = betterproto.bytes_field(2)
+    value: bytes = cbproto.bytes_field(2)
     """Must be a valid serialized protocol buffer of the above specified type."""
 
 
 @dataclass(eq=False, repr=False)
-class Type(betterproto.Message):
+class Type(cbproto.Message):
     """A protocol buffer message type."""
 
-    name: str = betterproto.string_field(1)
+    name: str = cbproto.string_field(1)
     """The fully qualified message name."""
 
-    fields: List["Field"] = betterproto.message_field(2)
+    fields: List["Field"] = cbproto.message_field(2)
     """The list of fields."""
 
-    oneofs: List[str] = betterproto.string_field(3)
+    oneofs: List[str] = cbproto.string_field(3)
     """The list of types appearing in `oneof` definitions in this type."""
 
-    options: List["Option"] = betterproto.message_field(4)
+    options: List["Option"] = cbproto.message_field(4)
     """The protocol buffer options."""
 
-    source_context: "SourceContext" = betterproto.message_field(5)
+    source_context: "SourceContext" = cbproto.message_field(5)
     """The source context."""
 
-    syntax: "Syntax" = betterproto.enum_field(6)
+    syntax: "Syntax" = cbproto.enum_field(6)
     """The source syntax."""
 
 
 @dataclass(eq=False, repr=False)
-class Field(betterproto.Message):
+class Field(cbproto.Message):
     """A single field of a message type."""
 
-    kind: "Field.Kind" = betterproto.enum_field(1)
+    kind: "Field.Kind" = cbproto.enum_field(1)
     """The field type."""
 
-    cardinality: "Field.Cardinality" = betterproto.enum_field(2)
+    cardinality: "Field.Cardinality" = cbproto.enum_field(2)
     """The field cardinality."""
 
-    number: int = betterproto.int32_field(3)
+    number: int = cbproto.int32_field(3)
     """The field number."""
 
-    name: str = betterproto.string_field(4)
+    name: str = cbproto.string_field(4)
     """The field name."""
 
-    type_url: str = betterproto.string_field(6)
+    type_url: str = cbproto.string_field(6)
     """
     The field type URL, without the scheme, for message or enumeration
     types. Example: `"type.googleapis.com/google.protobuf.Timestamp"`.
     """
 
-    oneof_index: int = betterproto.int32_field(7)
+    oneof_index: int = cbproto.int32_field(7)
     """
     The index of the field type in `Type.oneofs`, for message or enumeration
     types. The first type has index 1; zero means the type is not in the list.
     """
 
-    packed: bool = betterproto.bool_field(8)
+    packed: bool = cbproto.bool_field(8)
     """Whether to use alternative packed wire representation."""
 
-    options: List["Option"] = betterproto.message_field(9)
+    options: List["Option"] = cbproto.message_field(9)
     """The protocol buffer options."""
 
-    json_name: str = betterproto.string_field(10)
+    json_name: str = cbproto.string_field(10)
     """The field JSON name."""
 
-    default_value: str = betterproto.string_field(11)
+    default_value: str = cbproto.string_field(11)
     """The string value of the default value of this field. Proto2 syntax only."""
 
-    class Kind(betterproto.Enum):
+    class Kind(cbproto.Enum):
         """Basic field types."""
 
         TYPE_UNKNOWN = 0
@@ -620,7 +620,7 @@ class Field(betterproto.Message):
         TYPE_SINT64 = 18
         """Field type sint64."""
 
-    class Cardinality(betterproto.Enum):
+    class Cardinality(cbproto.Enum):
         """Whether a field is optional, required, or repeated."""
 
         CARDINALITY_UNKNOWN = 0
@@ -637,47 +637,47 @@ class Field(betterproto.Message):
 
 
 @dataclass(eq=False, repr=False)
-class Enum(betterproto.Message):
+class Enum(cbproto.Message):
     """Enum type definition."""
 
-    name: str = betterproto.string_field(1)
+    name: str = cbproto.string_field(1)
     """Enum type name."""
 
-    enumvalue: List["EnumValue"] = betterproto.message_field(2, wraps=betterproto.TYPE_ENUM)
+    enumvalue: List["EnumValue"] = cbproto.message_field(2, wraps=cbproto.TYPE_ENUM)
     """Enum value definitions."""
 
-    options: List["Option"] = betterproto.message_field(3)
+    options: List["Option"] = cbproto.message_field(3)
     """Protocol buffer options."""
 
-    source_context: "SourceContext" = betterproto.message_field(4)
+    source_context: "SourceContext" = cbproto.message_field(4)
     """The source context."""
 
-    syntax: "Syntax" = betterproto.enum_field(5)
+    syntax: "Syntax" = cbproto.enum_field(5)
     """The source syntax."""
 
 
 @dataclass(eq=False, repr=False)
-class EnumValue(betterproto.Message):
+class EnumValue(cbproto.Message):
     """Enum value definition."""
 
-    name: str = betterproto.string_field(1)
+    name: str = cbproto.string_field(1)
     """Enum value name."""
 
-    number: int = betterproto.int32_field(2)
+    number: int = cbproto.int32_field(2)
     """Enum value number."""
 
-    options: List["Option"] = betterproto.message_field(3)
+    options: List["Option"] = cbproto.message_field(3)
     """Protocol buffer options."""
 
 
 @dataclass(eq=False, repr=False)
-class Option(betterproto.Message):
+class Option(cbproto.Message):
     """
     A protocol buffer option, which can be attached to a message, field,
     enumeration, etc.
     """
 
-    name: str = betterproto.string_field(1)
+    name: str = cbproto.string_field(1)
     """
     The option's name. For protobuf built-in options (options defined in
     descriptor.proto), this is the short name. For example, `"map_entry"`.
@@ -685,7 +685,7 @@ class Option(betterproto.Message):
     `"google.api.http"`.
     """
 
-    value: "Any" = betterproto.message_field(2)
+    value: "Any" = cbproto.message_field(2)
     """
     The option's value packed in an Any message. If the value is a primitive,
     the corresponding wrapper type defined in google/protobuf/wrappers.proto
@@ -695,7 +695,7 @@ class Option(betterproto.Message):
 
 
 @dataclass(eq=False, repr=False)
-class Api(betterproto.Message):
+class Api(cbproto.Message):
     """
     Api is a light-weight descriptor for an API Interface.
 
@@ -708,19 +708,19 @@ class Api(betterproto.Message):
     detailed terminology.
     """
 
-    name: str = betterproto.string_field(1)
+    name: str = cbproto.string_field(1)
     """
     The fully qualified name of this interface, including package name
     followed by the interface's simple name.
     """
 
-    methods: List["Method"] = betterproto.message_field(2)
+    methods: List["Method"] = cbproto.message_field(2)
     """The methods of this interface, in unspecified order."""
 
-    options: List["Option"] = betterproto.message_field(3)
+    options: List["Option"] = cbproto.message_field(3)
     """Any metadata attached to the interface."""
 
-    version: str = betterproto.string_field(4)
+    version: str = cbproto.string_field(4)
     """
     A version string for this interface. If specified, must have the form
     `major-version.minor-version`, as in `1.10`. If the minor version is
@@ -743,47 +743,47 @@ class Api(betterproto.Message):
     experimental, non-GA interfaces.
     """
 
-    source_context: "SourceContext" = betterproto.message_field(5)
+    source_context: "SourceContext" = cbproto.message_field(5)
     """
     Source context for the protocol buffer service represented by this
     message.
     """
 
-    mixins: List["Mixin"] = betterproto.message_field(6)
+    mixins: List["Mixin"] = cbproto.message_field(6)
     """Included interfaces. See [Mixin][]."""
 
-    syntax: "Syntax" = betterproto.enum_field(7)
+    syntax: "Syntax" = cbproto.enum_field(7)
     """The source syntax of the service."""
 
 
 @dataclass(eq=False, repr=False)
-class Method(betterproto.Message):
+class Method(cbproto.Message):
     """Method represents a method of an API interface."""
 
-    name: str = betterproto.string_field(1)
+    name: str = cbproto.string_field(1)
     """The simple name of this method."""
 
-    request_type_url: str = betterproto.string_field(2)
+    request_type_url: str = cbproto.string_field(2)
     """A URL of the input message type."""
 
-    request_streaming: bool = betterproto.bool_field(3)
+    request_streaming: bool = cbproto.bool_field(3)
     """If true, the request is streamed."""
 
-    response_type_url: str = betterproto.string_field(4)
+    response_type_url: str = cbproto.string_field(4)
     """The URL of the output message type."""
 
-    response_streaming: bool = betterproto.bool_field(5)
+    response_streaming: bool = cbproto.bool_field(5)
     """If true, the response is streamed."""
 
-    options: List["Option"] = betterproto.message_field(6)
+    options: List["Option"] = cbproto.message_field(6)
     """Any metadata attached to the method."""
 
-    syntax: "Syntax" = betterproto.enum_field(7)
+    syntax: "Syntax" = cbproto.enum_field(7)
     """The source syntax of this method."""
 
 
 @dataclass(eq=False, repr=False)
-class Mixin(betterproto.Message):
+class Mixin(cbproto.Message):
     """
     Declares an API Interface to be included in this interface. The including
     interface must redeclare all the methods from the included interface, but
@@ -865,10 +865,10 @@ class Mixin(betterproto.Message):
         }
     """
 
-    name: str = betterproto.string_field(1)
+    name: str = cbproto.string_field(1)
     """The fully qualified name of the interface which is included."""
 
-    root: str = betterproto.string_field(2)
+    root: str = cbproto.string_field(2)
     """
     If non-empty specifies a path under which inherited HTTP paths
     are rooted.
@@ -876,7 +876,7 @@ class Mixin(betterproto.Message):
 
 
 @dataclass(eq=False, repr=False)
-class Duration(betterproto.Message):
+class Duration(cbproto.Message):
     """
     A Duration represents a signed, fixed-length span of time represented
     as a count of seconds and fractions of seconds at nanosecond
@@ -938,14 +938,14 @@ class Duration(betterproto.Message):
     microsecond should be expressed in JSON format as "3.000001s".
     """
 
-    seconds: int = betterproto.int64_field(1)
+    seconds: int = cbproto.int64_field(1)
     """
     Signed seconds of the span of time. Must be from -315,576,000,000
     to +315,576,000,000 inclusive. Note: these bounds are computed from:
     60 sec/min * 60 min/hr * 24 hr/day * 365.25 days/year * 10000 years
     """
 
-    nanos: int = betterproto.int32_field(2)
+    nanos: int = cbproto.int32_field(2)
     """
     Signed fractions of a second at nanosecond resolution of the span
     of time. Durations less than one second are represented with a 0
@@ -957,7 +957,7 @@ class Duration(betterproto.Message):
 
 
 @dataclass(eq=False, repr=False)
-class Struct(betterproto.Message):
+class Struct(cbproto.Message):
     """
     `Struct` represents a structured data value, consisting of fields
     which map to dynamically typed values. In some languages, `Struct`
@@ -969,12 +969,12 @@ class Struct(betterproto.Message):
     The JSON representation for `Struct` is JSON object.
     """
 
-    fields: Dict[str, "Value"] = betterproto.map_field(1, betterproto.TYPE_STRING, betterproto.TYPE_MESSAGE)
+    fields: Dict[str, "Value"] = cbproto.map_field(1, cbproto.TYPE_STRING, cbproto.TYPE_MESSAGE)
     """Unordered map of dynamically typed values."""
 
 
 @dataclass(eq=False, repr=False)
-class Value(betterproto.Message):
+class Value(cbproto.Message):
     """
     `Value` represents a dynamically typed value which can be either
     null, a number, a string, a boolean, a recursive struct value, or a
@@ -984,147 +984,147 @@ class Value(betterproto.Message):
     The JSON representation for `Value` is JSON value.
     """
 
-    null_value: "NullValue" = betterproto.enum_field(1, group="kind")
+    null_value: "NullValue" = cbproto.enum_field(1, group="kind")
     """Represents a null value."""
 
-    number_value: float = betterproto.double_field(2, group="kind")
+    number_value: float = cbproto.double_field(2, group="kind")
     """Represents a double value."""
 
-    string_value: str = betterproto.string_field(3, group="kind")
+    string_value: str = cbproto.string_field(3, group="kind")
     """Represents a string value."""
 
-    bool_value: bool = betterproto.bool_field(4, group="kind")
+    bool_value: bool = cbproto.bool_field(4, group="kind")
     """Represents a boolean value."""
 
-    struct_value: "Struct" = betterproto.message_field(5, group="kind")
+    struct_value: "Struct" = cbproto.message_field(5, group="kind")
     """Represents a structured value."""
 
-    list_value: "ListValue" = betterproto.message_field(6, group="kind")
+    list_value: "ListValue" = cbproto.message_field(6, group="kind")
     """Represents a repeated `Value`."""
 
 
 @dataclass(eq=False, repr=False)
-class ListValue(betterproto.Message):
+class ListValue(cbproto.Message):
     """
     `ListValue` is a wrapper around a repeated field of values.
 
     The JSON representation for `ListValue` is JSON array.
     """
 
-    values: List["Value"] = betterproto.message_field(1)
+    values: List["Value"] = cbproto.message_field(1)
     """Repeated field of dynamically typed values."""
 
 
 @dataclass(eq=False, repr=False)
-class DoubleValue(betterproto.Message):
+class DoubleValue(cbproto.Message):
     """
     Wrapper message for `double`.
 
     The JSON representation for `DoubleValue` is JSON number.
     """
 
-    value: float = betterproto.double_field(1)
+    value: float = cbproto.double_field(1)
     """The double value."""
 
 
 @dataclass(eq=False, repr=False)
-class FloatValue(betterproto.Message):
+class FloatValue(cbproto.Message):
     """
     Wrapper message for `float`.
 
     The JSON representation for `FloatValue` is JSON number.
     """
 
-    value: float = betterproto.float_field(1)
+    value: float = cbproto.float_field(1)
     """The float value."""
 
 
 @dataclass(eq=False, repr=False)
-class Int64Value(betterproto.Message):
+class Int64Value(cbproto.Message):
     """
     Wrapper message for `int64`.
 
     The JSON representation for `Int64Value` is JSON string.
     """
 
-    value: int = betterproto.int64_field(1)
+    value: int = cbproto.int64_field(1)
     """The int64 value."""
 
 
 @dataclass(eq=False, repr=False)
-class UInt64Value(betterproto.Message):
+class UInt64Value(cbproto.Message):
     """
     Wrapper message for `uint64`.
 
     The JSON representation for `UInt64Value` is JSON string.
     """
 
-    value: int = betterproto.uint64_field(1)
+    value: int = cbproto.uint64_field(1)
     """The uint64 value."""
 
 
 @dataclass(eq=False, repr=False)
-class Int32Value(betterproto.Message):
+class Int32Value(cbproto.Message):
     """
     Wrapper message for `int32`.
 
     The JSON representation for `Int32Value` is JSON number.
     """
 
-    value: int = betterproto.int32_field(1)
+    value: int = cbproto.int32_field(1)
     """The int32 value."""
 
 
 @dataclass(eq=False, repr=False)
-class UInt32Value(betterproto.Message):
+class UInt32Value(cbproto.Message):
     """
     Wrapper message for `uint32`.
 
     The JSON representation for `UInt32Value` is JSON number.
     """
 
-    value: int = betterproto.uint32_field(1)
+    value: int = cbproto.uint32_field(1)
     """The uint32 value."""
 
 
 @dataclass(eq=False, repr=False)
-class BoolValue(betterproto.Message):
+class BoolValue(cbproto.Message):
     """
     Wrapper message for `bool`.
 
     The JSON representation for `BoolValue` is JSON `true` and `false`.
     """
 
-    value: bool = betterproto.bool_field(1)
+    value: bool = cbproto.bool_field(1)
     """The bool value."""
 
 
 @dataclass(eq=False, repr=False)
-class StringValue(betterproto.Message):
+class StringValue(cbproto.Message):
     """
     Wrapper message for `string`.
 
     The JSON representation for `StringValue` is JSON string.
     """
 
-    value: str = betterproto.string_field(1)
+    value: str = cbproto.string_field(1)
     """The string value."""
 
 
 @dataclass(eq=False, repr=False)
-class BytesValue(betterproto.Message):
+class BytesValue(cbproto.Message):
     """
     Wrapper message for `bytes`.
 
     The JSON representation for `BytesValue` is JSON string.
     """
 
-    value: bytes = betterproto.bytes_field(1)
+    value: bytes = cbproto.bytes_field(1)
     """The bytes value."""
 
 
 @dataclass(eq=False, repr=False)
-class Empty(betterproto.Message):
+class Empty(cbproto.Message):
     """
     A generic empty message that you can re-use to avoid defining duplicated
     empty messages in your APIs. A typical example is to use it as the request
@@ -1141,41 +1141,41 @@ class Empty(betterproto.Message):
 
 
 @dataclass(eq=False, repr=False)
-class FileDescriptorSet(betterproto.Message):
+class FileDescriptorSet(cbproto.Message):
     """
     The protocol compiler can output a FileDescriptorSet containing the .proto
     files it parses.
     """
 
-    file: List["FileDescriptorProto"] = betterproto.message_field(1)
+    file: List["FileDescriptorProto"] = cbproto.message_field(1)
 
 
 @dataclass(eq=False, repr=False)
-class FileDescriptorProto(betterproto.Message):
+class FileDescriptorProto(cbproto.Message):
     """Describes a complete .proto file."""
 
-    name: str = betterproto.string_field(1)
-    package: str = betterproto.string_field(2)
-    dependency: List[str] = betterproto.string_field(3)
+    name: str = cbproto.string_field(1)
+    package: str = cbproto.string_field(2)
+    dependency: List[str] = cbproto.string_field(3)
     """Names of files imported by this file."""
 
-    public_dependency: List[int] = betterproto.int32_field(10)
+    public_dependency: List[int] = cbproto.int32_field(10)
     """Indexes of the public imported files in the dependency list above."""
 
-    weak_dependency: List[int] = betterproto.int32_field(11)
+    weak_dependency: List[int] = cbproto.int32_field(11)
     """
     Indexes of the weak imported files in the dependency list.
     For Google-internal migration only. Do not use.
     """
 
-    message_type: List["DescriptorProto"] = betterproto.message_field(4)
+    message_type: List["DescriptorProto"] = cbproto.message_field(4)
     """All top-level definitions in this file."""
 
-    enum_type: List["EnumDescriptorProto"] = betterproto.message_field(5)
-    service: List["ServiceDescriptorProto"] = betterproto.message_field(6)
-    extension: List["FieldDescriptorProto"] = betterproto.message_field(7)
-    options: "FileOptions" = betterproto.message_field(8)
-    source_code_info: "SourceCodeInfo" = betterproto.message_field(9)
+    enum_type: List["EnumDescriptorProto"] = cbproto.message_field(5)
+    service: List["ServiceDescriptorProto"] = cbproto.message_field(6)
+    extension: List["FieldDescriptorProto"] = cbproto.message_field(7)
+    options: "FileOptions" = cbproto.message_field(8)
+    source_code_info: "SourceCodeInfo" = cbproto.message_field(9)
     """
     This field contains optional information about the original source code.
     You may safely remove this entire field without harming runtime
@@ -1183,7 +1183,7 @@ class FileDescriptorProto(betterproto.Message):
     development tools.
     """
 
-    syntax: str = betterproto.string_field(12)
+    syntax: str = cbproto.string_field(12)
     """
     The syntax of the proto file.
     The supported values are "proto2" and "proto3".
@@ -1191,62 +1191,62 @@ class FileDescriptorProto(betterproto.Message):
 
 
 @dataclass(eq=False, repr=False)
-class DescriptorProto(betterproto.Message):
+class DescriptorProto(cbproto.Message):
     """Describes a message type."""
 
-    name: str = betterproto.string_field(1)
-    field: List["FieldDescriptorProto"] = betterproto.message_field(2)
-    extension: List["FieldDescriptorProto"] = betterproto.message_field(6)
-    nested_type: List["DescriptorProto"] = betterproto.message_field(3)
-    enum_type: List["EnumDescriptorProto"] = betterproto.message_field(4)
-    extension_range: List["DescriptorProto.ExtensionRange"] = betterproto.message_field(5)
-    oneof_decl: List["OneofDescriptorProto"] = betterproto.message_field(8)
-    options: "MessageOptions" = betterproto.message_field(7)
-    reserved_range: List["DescriptorProto.ReservedRange"] = betterproto.message_field(9)
-    reserved_name: List[str] = betterproto.string_field(10)
+    name: str = cbproto.string_field(1)
+    field: List["FieldDescriptorProto"] = cbproto.message_field(2)
+    extension: List["FieldDescriptorProto"] = cbproto.message_field(6)
+    nested_type: List["DescriptorProto"] = cbproto.message_field(3)
+    enum_type: List["EnumDescriptorProto"] = cbproto.message_field(4)
+    extension_range: List["DescriptorProto.ExtensionRange"] = cbproto.message_field(5)
+    oneof_decl: List["OneofDescriptorProto"] = cbproto.message_field(8)
+    options: "MessageOptions" = cbproto.message_field(7)
+    reserved_range: List["DescriptorProto.ReservedRange"] = cbproto.message_field(9)
+    reserved_name: List[str] = cbproto.string_field(10)
     """
     Reserved field names, which may not be used by fields in the same message.
     A given name may only be reserved once.
     """
 
     @dataclass(eq=False, repr=False)
-    class ExtensionRange(betterproto.Message):
-        start: int = betterproto.int32_field(1)
-        end: int = betterproto.int32_field(2)
-        options: "ExtensionRangeOptions" = betterproto.message_field(3)
+    class ExtensionRange(cbproto.Message):
+        start: int = cbproto.int32_field(1)
+        end: int = cbproto.int32_field(2)
+        options: "ExtensionRangeOptions" = cbproto.message_field(3)
 
     @dataclass(eq=False, repr=False)
-    class ReservedRange(betterproto.Message):
+    class ReservedRange(cbproto.Message):
         """
         Range of reserved tag numbers. Reserved tag numbers may not be used by
         fields or extension ranges in the same message. Reserved ranges may
         not overlap.
         """
 
-        start: int = betterproto.int32_field(1)
-        end: int = betterproto.int32_field(2)
+        start: int = cbproto.int32_field(1)
+        end: int = cbproto.int32_field(2)
 
 
 @dataclass(eq=False, repr=False)
-class ExtensionRangeOptions(betterproto.Message):
-    uninterpreted_option: List["UninterpretedOption"] = betterproto.message_field(999)
+class ExtensionRangeOptions(cbproto.Message):
+    uninterpreted_option: List["UninterpretedOption"] = cbproto.message_field(999)
     """The parser stores options it doesn't recognize here. See above."""
 
 
 @dataclass(eq=False, repr=False)
-class FieldDescriptorProto(betterproto.Message):
+class FieldDescriptorProto(cbproto.Message):
     """Describes a field within a message."""
 
-    name: str = betterproto.string_field(1)
-    number: int = betterproto.int32_field(3)
-    label: "FieldDescriptorProto.Label" = betterproto.enum_field(4)
-    type: "FieldDescriptorProto.Type" = betterproto.enum_field(5)
+    name: str = cbproto.string_field(1)
+    number: int = cbproto.int32_field(3)
+    label: "FieldDescriptorProto.Label" = cbproto.enum_field(4)
+    type: "FieldDescriptorProto.Type" = cbproto.enum_field(5)
     """
     If type_name is set, this need not be set.  If both this and type_name
     are set, this must be one of TYPE_ENUM, TYPE_MESSAGE or TYPE_GROUP.
     """
 
-    type_name: str = betterproto.string_field(6)
+    type_name: str = cbproto.string_field(6)
     """
     For message and enum types, this is the name of the type.  If the name
     starts with a '.', it is fully-qualified.  Otherwise, C++-like scoping
@@ -1255,13 +1255,13 @@ class FieldDescriptorProto(betterproto.Message):
     namespace).
     """
 
-    extendee: str = betterproto.string_field(2)
+    extendee: str = cbproto.string_field(2)
     """
     For extensions, this is the name of the type being extended.  It is
     resolved in the same manner as type_name.
     """
 
-    default_value: str = betterproto.string_field(7)
+    default_value: str = cbproto.string_field(7)
     """
     For numeric types, contains the original text representation of the value.
     For booleans, "true" or "false".
@@ -1270,13 +1270,13 @@ class FieldDescriptorProto(betterproto.Message):
     TODO(kenton):  Base-64 encode?
     """
 
-    oneof_index: int = betterproto.int32_field(9)
+    oneof_index: int = cbproto.int32_field(9)
     """
     If set, gives the index of a oneof in the containing type's oneof_decl
     list.  This field is a member of that oneof.
     """
 
-    json_name: str = betterproto.string_field(10)
+    json_name: str = cbproto.string_field(10)
     """
     JSON name of this field. The value is set by protocol compiler. If the
     user has set a "json_name" option on this field, that option's value
@@ -1284,8 +1284,8 @@ class FieldDescriptorProto(betterproto.Message):
     it to camelCase.
     """
 
-    options: "FieldOptions" = betterproto.message_field(8)
-    proto3_optional: bool = betterproto.bool_field(17)
+    options: "FieldOptions" = cbproto.message_field(8)
+    proto3_optional: bool = cbproto.bool_field(17)
     """
     If true, this is a proto3 "optional". When a proto3 field is optional, it
     tracks presence regardless of field type.
@@ -1310,7 +1310,7 @@ class FieldDescriptorProto(betterproto.Message):
     optional with `LABEL_OPTIONAL`.
     """
 
-    class Type(betterproto.Enum):
+    class Type(cbproto.Enum):
         TYPE_DOUBLE = 1
         """
         0 is reserved for errors.
@@ -1354,7 +1354,7 @@ class FieldDescriptorProto(betterproto.Message):
         TYPE_SINT32 = 17
         TYPE_SINT64 = 18
 
-    class Label(betterproto.Enum):
+    class Label(cbproto.Enum):
         LABEL_OPTIONAL = 1
         """0 is reserved for errors"""
 
@@ -1363,35 +1363,35 @@ class FieldDescriptorProto(betterproto.Message):
 
 
 @dataclass(eq=False, repr=False)
-class OneofDescriptorProto(betterproto.Message):
+class OneofDescriptorProto(cbproto.Message):
     """Describes a oneof."""
 
-    name: str = betterproto.string_field(1)
-    options: "OneofOptions" = betterproto.message_field(2)
+    name: str = cbproto.string_field(1)
+    options: "OneofOptions" = cbproto.message_field(2)
 
 
 @dataclass(eq=False, repr=False)
-class EnumDescriptorProto(betterproto.Message):
+class EnumDescriptorProto(cbproto.Message):
     """Describes an enum type."""
 
-    name: str = betterproto.string_field(1)
-    value: List["EnumValueDescriptorProto"] = betterproto.message_field(2)
-    options: "EnumOptions" = betterproto.message_field(3)
-    reserved_range: List["EnumDescriptorProto.EnumReservedRange"] = betterproto.message_field(4)
+    name: str = cbproto.string_field(1)
+    value: List["EnumValueDescriptorProto"] = cbproto.message_field(2)
+    options: "EnumOptions" = cbproto.message_field(3)
+    reserved_range: List["EnumDescriptorProto.EnumReservedRange"] = cbproto.message_field(4)
     """
     Range of reserved numeric values. Reserved numeric values may not be used
     by enum values in the same enum declaration. Reserved ranges may not
     overlap.
     """
 
-    reserved_name: List[str] = betterproto.string_field(5)
+    reserved_name: List[str] = cbproto.string_field(5)
     """
     Reserved enum value names, which may not be reused. A given name may only
     be reserved once.
     """
 
     @dataclass(eq=False, repr=False)
-    class EnumReservedRange(betterproto.Message):
+    class EnumReservedRange(cbproto.Message):
         """
         Range of reserved numeric values. Reserved values may not be used by
         entries in the same enum. Reserved ranges may not overlap.
@@ -1401,51 +1401,51 @@ class EnumDescriptorProto(betterproto.Message):
         domain.
         """
 
-        start: int = betterproto.int32_field(1)
-        end: int = betterproto.int32_field(2)
+        start: int = cbproto.int32_field(1)
+        end: int = cbproto.int32_field(2)
 
 
 @dataclass(eq=False, repr=False)
-class EnumValueDescriptorProto(betterproto.Message):
+class EnumValueDescriptorProto(cbproto.Message):
     """Describes a value within an enum."""
 
-    name: str = betterproto.string_field(1)
-    number: int = betterproto.int32_field(2)
-    options: "EnumValueOptions" = betterproto.message_field(3)
+    name: str = cbproto.string_field(1)
+    number: int = cbproto.int32_field(2)
+    options: "EnumValueOptions" = cbproto.message_field(3)
 
 
 @dataclass(eq=False, repr=False)
-class ServiceDescriptorProto(betterproto.Message):
+class ServiceDescriptorProto(cbproto.Message):
     """Describes a service."""
 
-    name: str = betterproto.string_field(1)
-    method: List["MethodDescriptorProto"] = betterproto.message_field(2)
-    options: "ServiceOptions" = betterproto.message_field(3)
+    name: str = cbproto.string_field(1)
+    method: List["MethodDescriptorProto"] = cbproto.message_field(2)
+    options: "ServiceOptions" = cbproto.message_field(3)
 
 
 @dataclass(eq=False, repr=False)
-class MethodDescriptorProto(betterproto.Message):
+class MethodDescriptorProto(cbproto.Message):
     """Describes a method of a service."""
 
-    name: str = betterproto.string_field(1)
-    input_type: str = betterproto.string_field(2)
+    name: str = cbproto.string_field(1)
+    input_type: str = cbproto.string_field(2)
     """
     Input and output type names.  These are resolved in the same way as
     FieldDescriptorProto.type_name, but must refer to a message type.
     """
 
-    output_type: str = betterproto.string_field(3)
-    options: "MethodOptions" = betterproto.message_field(4)
-    client_streaming: bool = betterproto.bool_field(5)
+    output_type: str = cbproto.string_field(3)
+    options: "MethodOptions" = cbproto.message_field(4)
+    client_streaming: bool = cbproto.bool_field(5)
     """Identifies if client streams multiple client messages"""
 
-    server_streaming: bool = betterproto.bool_field(6)
+    server_streaming: bool = cbproto.bool_field(6)
     """Identifies if server streams multiple server messages"""
 
 
 @dataclass(eq=False, repr=False)
-class FileOptions(betterproto.Message):
-    java_package: str = betterproto.string_field(1)
+class FileOptions(cbproto.Message):
+    java_package: str = cbproto.string_field(1)
     """
     Sets the Java package where classes generated from this .proto will be
     placed.  By default, the proto package is used, but this is often
@@ -1453,7 +1453,7 @@ class FileOptions(betterproto.Message):
     domain names.
     """
 
-    java_outer_classname: str = betterproto.string_field(8)
+    java_outer_classname: str = cbproto.string_field(8)
     """
     Controls the name of the wrapper Java class generated for the .proto file.
     That class will always contain the .proto file's getDescriptor() method as
@@ -1462,7 +1462,7 @@ class FileOptions(betterproto.Message):
     .proto file will be nested inside the single wrapper outer class.
     """
 
-    java_multiple_files: bool = betterproto.bool_field(10)
+    java_multiple_files: bool = cbproto.bool_field(10)
     """
     If enabled, then the Java code generator will generate a separate .java
     file for each top-level message, enum, and service defined in the .proto
@@ -1472,10 +1472,10 @@ class FileOptions(betterproto.Message):
     top-level extensions defined in the file.
     """
 
-    java_generate_equals_and_hash: bool = betterproto.bool_field(20)
+    java_generate_equals_and_hash: bool = cbproto.bool_field(20)
     """This option does nothing."""
 
-    java_string_check_utf8: bool = betterproto.bool_field(27)
+    java_string_check_utf8: bool = cbproto.bool_field(27)
     """
     If set true, then the Java2 code generator will generate code that
     throws an exception whenever an attempt is made to assign a non-UTF-8
@@ -1485,8 +1485,8 @@ class FileOptions(betterproto.Message):
     This option has no effect on when used with the lite runtime.
     """
 
-    optimize_for: "FileOptions.OptimizeMode" = betterproto.enum_field(9)
-    go_package: str = betterproto.string_field(11)
+    optimize_for: "FileOptions.OptimizeMode" = cbproto.enum_field(9)
+    go_package: str = cbproto.string_field(11)
     """
     Sets the Go package where structs generated from this .proto will be
     placed. If omitted, the Go package will be derived from the following:
@@ -1495,7 +1495,7 @@ class FileOptions(betterproto.Message):
     - Otherwise, the basename of the .proto file, without extension.
     """
 
-    cc_generic_services: bool = betterproto.bool_field(16)
+    cc_generic_services: bool = cbproto.bool_field(16)
     """
     Should generic services be generated in each language?  "Generic" services
     are not specific to any particular RPC system.  They are generated by the
@@ -1509,10 +1509,10 @@ class FileOptions(betterproto.Message):
     explicitly set them to true.
     """
 
-    java_generic_services: bool = betterproto.bool_field(17)
-    py_generic_services: bool = betterproto.bool_field(18)
-    php_generic_services: bool = betterproto.bool_field(42)
-    deprecated: bool = betterproto.bool_field(23)
+    java_generic_services: bool = cbproto.bool_field(17)
+    py_generic_services: bool = cbproto.bool_field(18)
+    php_generic_services: bool = cbproto.bool_field(42)
+    deprecated: bool = cbproto.bool_field(23)
     """
     Is this file deprecated?
     Depending on the target platform, this can emit Deprecated annotations
@@ -1520,22 +1520,22 @@ class FileOptions(betterproto.Message):
     least, this is a formalization for deprecating files.
     """
 
-    cc_enable_arenas: bool = betterproto.bool_field(31)
+    cc_enable_arenas: bool = cbproto.bool_field(31)
     """
     Enables the use of arenas for the proto messages in this file. This applies
     only to generated classes for C++.
     """
 
-    objc_class_prefix: str = betterproto.string_field(36)
+    objc_class_prefix: str = cbproto.string_field(36)
     """
     Sets the objective c class prefix which is prepended to all objective c
     generated classes from this .proto. There is no default.
     """
 
-    csharp_namespace: str = betterproto.string_field(37)
+    csharp_namespace: str = cbproto.string_field(37)
     """Namespace for generated classes; defaults to the package."""
 
-    swift_prefix: str = betterproto.string_field(39)
+    swift_prefix: str = cbproto.string_field(39)
     """
     By default Swift generators will take the proto package and CamelCase it
     replacing '.' with underscore and use that to prefix the types/symbols
@@ -1543,40 +1543,40 @@ class FileOptions(betterproto.Message):
     to prefix the types/symbols defined.
     """
 
-    php_class_prefix: str = betterproto.string_field(40)
+    php_class_prefix: str = cbproto.string_field(40)
     """
     Sets the php class prefix which is prepended to all php generated classes
     from this .proto. Default is empty.
     """
 
-    php_namespace: str = betterproto.string_field(41)
+    php_namespace: str = cbproto.string_field(41)
     """
     Use this option to change the namespace of php generated classes. Default
     is empty. When this option is empty, the package name will be used for
     determining the namespace.
     """
 
-    php_metadata_namespace: str = betterproto.string_field(44)
+    php_metadata_namespace: str = cbproto.string_field(44)
     """
     Use this option to change the namespace of php generated metadata classes.
     Default is empty. When this option is empty, the proto file name will be
     used for determining the namespace.
     """
 
-    ruby_package: str = betterproto.string_field(45)
+    ruby_package: str = cbproto.string_field(45)
     """
     Use this option to change the package of ruby generated classes. Default
     is empty. When this option is not set, the package name will be used for
     determining the ruby package.
     """
 
-    uninterpreted_option: List["UninterpretedOption"] = betterproto.message_field(999)
+    uninterpreted_option: List["UninterpretedOption"] = cbproto.message_field(999)
     """
     The parser stores options it doesn't recognize here.
     See the documentation for the "Options" section above.
     """
 
-    class OptimizeMode(betterproto.Enum):
+    class OptimizeMode(cbproto.Enum):
         """Generated classes can be optimized for speed or code size."""
 
         SPEED = 1
@@ -1591,8 +1591,8 @@ class FileOptions(betterproto.Message):
 
 
 @dataclass(eq=False, repr=False)
-class MessageOptions(betterproto.Message):
-    message_set_wire_format: bool = betterproto.bool_field(1)
+class MessageOptions(cbproto.Message):
+    message_set_wire_format: bool = cbproto.bool_field(1)
     """
     Set true to use the old proto1 MessageSet wire format for extensions.
     This is provided for backwards-compatibility with the MessageSet wire
@@ -1614,14 +1614,14 @@ class MessageOptions(betterproto.Message):
     the protocol compiler.
     """
 
-    no_standard_descriptor_accessor: bool = betterproto.bool_field(2)
+    no_standard_descriptor_accessor: bool = cbproto.bool_field(2)
     """
     Disables the generation of the standard "descriptor()" accessor, which can
     conflict with a field of the same name.  This is meant to make migration
     from proto1 easier; new code should avoid fields named "descriptor".
     """
 
-    deprecated: bool = betterproto.bool_field(3)
+    deprecated: bool = cbproto.bool_field(3)
     """
     Is this message deprecated?
     Depending on the target platform, this can emit Deprecated annotations
@@ -1629,7 +1629,7 @@ class MessageOptions(betterproto.Message):
     this is a formalization for deprecating messages.
     """
 
-    map_entry: bool = betterproto.bool_field(7)
+    map_entry: bool = cbproto.bool_field(7)
     """
     Whether the message is an automatically generated map entry type for the
     maps field.
@@ -1654,13 +1654,13 @@ class MessageOptions(betterproto.Message):
     parser.
     """
 
-    uninterpreted_option: List["UninterpretedOption"] = betterproto.message_field(999)
+    uninterpreted_option: List["UninterpretedOption"] = cbproto.message_field(999)
     """The parser stores options it doesn't recognize here. See above."""
 
 
 @dataclass(eq=False, repr=False)
-class FieldOptions(betterproto.Message):
-    ctype: "FieldOptions.CType" = betterproto.enum_field(1)
+class FieldOptions(cbproto.Message):
+    ctype: "FieldOptions.CType" = cbproto.enum_field(1)
     """
     The ctype option instructs the C++ code generator to use a different
     representation of the field than it normally would.  See the specific
@@ -1668,7 +1668,7 @@ class FieldOptions(betterproto.Message):
     release -- sorry, we'll try to include it in a future version!
     """
 
-    packed: bool = betterproto.bool_field(2)
+    packed: bool = cbproto.bool_field(2)
     """
     The packed option can be enabled for repeated primitive fields to enable
     a more efficient representation on the wire. Rather than repeatedly
@@ -1677,7 +1677,7 @@ class FieldOptions(betterproto.Message):
     false will avoid using packed encoding.
     """
 
-    jstype: "FieldOptions.JsType" = betterproto.enum_field(6)
+    jstype: "FieldOptions.JsType" = cbproto.enum_field(6)
     """
     The jstype option determines the JavaScript type used for values of the
     field.  The option is permitted only for 64 bit integral and fixed types
@@ -1692,7 +1692,7 @@ class FieldOptions(betterproto.Message):
     goog.math.Integer.
     """
 
-    lazy: bool = betterproto.bool_field(5)
+    lazy: bool = cbproto.bool_field(5)
     """
     Should this field be parsed lazily?  Lazy applies only to message-type
     fields.  It means that when the outer message is initially parsed, the
@@ -1724,7 +1724,7 @@ class FieldOptions(betterproto.Message):
     been parsed.
     """
 
-    deprecated: bool = betterproto.bool_field(3)
+    deprecated: bool = cbproto.bool_field(3)
     """
     Is this field deprecated?
     Depending on the target platform, this can emit Deprecated annotations
@@ -1732,20 +1732,20 @@ class FieldOptions(betterproto.Message):
     is a formalization for deprecating fields.
     """
 
-    weak: bool = betterproto.bool_field(10)
+    weak: bool = cbproto.bool_field(10)
     """For Google-internal migration only. Do not use."""
 
-    uninterpreted_option: List["UninterpretedOption"] = betterproto.message_field(999)
+    uninterpreted_option: List["UninterpretedOption"] = cbproto.message_field(999)
     """The parser stores options it doesn't recognize here. See above."""
 
-    class CType(betterproto.Enum):
+    class CType(cbproto.Enum):
         STRING = 0
         """Default mode."""
 
         CORD = 1
         STRING_PIECE = 2
 
-    class JsType(betterproto.Enum):
+    class JsType(cbproto.Enum):
         JS_NORMAL = 0
         """Use the default type."""
 
@@ -1757,20 +1757,20 @@ class FieldOptions(betterproto.Message):
 
 
 @dataclass(eq=False, repr=False)
-class OneofOptions(betterproto.Message):
-    uninterpreted_option: List["UninterpretedOption"] = betterproto.message_field(999)
+class OneofOptions(cbproto.Message):
+    uninterpreted_option: List["UninterpretedOption"] = cbproto.message_field(999)
     """The parser stores options it doesn't recognize here. See above."""
 
 
 @dataclass(eq=False, repr=False)
-class EnumOptions(betterproto.Message):
-    allow_alias: bool = betterproto.bool_field(2)
+class EnumOptions(cbproto.Message):
+    allow_alias: bool = cbproto.bool_field(2)
     """
     Set this option to true to allow mapping different tag names to the same
     value.
     """
 
-    deprecated: bool = betterproto.bool_field(3)
+    deprecated: bool = cbproto.bool_field(3)
     """
     Is this enum deprecated?
     Depending on the target platform, this can emit Deprecated annotations
@@ -1778,13 +1778,13 @@ class EnumOptions(betterproto.Message):
     is a formalization for deprecating enums.
     """
 
-    uninterpreted_option: List["UninterpretedOption"] = betterproto.message_field(999)
+    uninterpreted_option: List["UninterpretedOption"] = cbproto.message_field(999)
     """The parser stores options it doesn't recognize here. See above."""
 
 
 @dataclass(eq=False, repr=False)
-class EnumValueOptions(betterproto.Message):
-    deprecated: bool = betterproto.bool_field(1)
+class EnumValueOptions(cbproto.Message):
+    deprecated: bool = cbproto.bool_field(1)
     """
     Is this enum value deprecated?
     Depending on the target platform, this can emit Deprecated annotations
@@ -1792,13 +1792,13 @@ class EnumValueOptions(betterproto.Message):
     this is a formalization for deprecating enum values.
     """
 
-    uninterpreted_option: List["UninterpretedOption"] = betterproto.message_field(999)
+    uninterpreted_option: List["UninterpretedOption"] = cbproto.message_field(999)
     """The parser stores options it doesn't recognize here. See above."""
 
 
 @dataclass(eq=False, repr=False)
-class ServiceOptions(betterproto.Message):
-    deprecated: bool = betterproto.bool_field(33)
+class ServiceOptions(cbproto.Message):
+    deprecated: bool = cbproto.bool_field(33)
     """
     Is this service deprecated?
     Depending on the target platform, this can emit Deprecated annotations
@@ -1806,15 +1806,15 @@ class ServiceOptions(betterproto.Message):
     this is a formalization for deprecating services.
     """
 
-    uninterpreted_option: List["UninterpretedOption"] = betterproto.message_field(999)
+    uninterpreted_option: List["UninterpretedOption"] = cbproto.message_field(999)
     """The parser stores options it doesn't recognize here. See above."""
 
-    options: Optional["__cbi_protobuf_service__.ServiceOptions"] = betterproto.message_field(1000, optional=True)
+    options: Optional["__cbi_protobuf_service__.ServiceOptions"] = cbproto.message_field(1000, optional=True)
 
 
 @dataclass(eq=False, repr=False)
-class MethodOptions(betterproto.Message):
-    deprecated: bool = betterproto.bool_field(33)
+class MethodOptions(cbproto.Message):
+    deprecated: bool = cbproto.bool_field(33)
     """
     Is this method deprecated?
     Depending on the target platform, this can emit Deprecated annotations
@@ -1822,11 +1822,11 @@ class MethodOptions(betterproto.Message):
     this is a formalization for deprecating methods.
     """
 
-    idempotency_level: "MethodOptions.IdempotencyLevel" = betterproto.enum_field(34)
-    uninterpreted_option: List["UninterpretedOption"] = betterproto.message_field(999)
+    idempotency_level: "MethodOptions.IdempotencyLevel" = cbproto.enum_field(34)
+    uninterpreted_option: List["UninterpretedOption"] = cbproto.message_field(999)
     """The parser stores options it doesn't recognize here. See above."""
 
-    class IdempotencyLevel(betterproto.Enum):
+    class IdempotencyLevel(cbproto.Enum):
         """
         Is this method side-effect-free (or safe in HTTP parlance), or idempotent,
         or neither? HTTP based RPC implementation may choose GET verb for safe
@@ -1839,7 +1839,7 @@ class MethodOptions(betterproto.Message):
 
 
 @dataclass(eq=False, repr=False)
-class UninterpretedOption(betterproto.Message):
+class UninterpretedOption(cbproto.Message):
     """
     A message representing a option the parser does not recognize. This only
     appears in options protos created by the compiler::Parser class.
@@ -1849,21 +1849,21 @@ class UninterpretedOption(betterproto.Message):
     in them.
     """
 
-    name: List["UninterpretedOption.NamePart"] = betterproto.message_field(2)
-    identifier_value: str = betterproto.string_field(3)
+    name: List["UninterpretedOption.NamePart"] = cbproto.message_field(2)
+    identifier_value: str = cbproto.string_field(3)
     """
     The value of the uninterpreted option, in whatever type the tokenizer
     identified it as during parsing. Exactly one of these should be set.
     """
 
-    positive_int_value: int = betterproto.uint64_field(4)
-    negative_int_value: int = betterproto.int64_field(5)
-    double_value: float = betterproto.double_field(6)
-    string_value: bytes = betterproto.bytes_field(7)
-    aggregate_value: str = betterproto.string_field(8)
+    positive_int_value: int = cbproto.uint64_field(4)
+    negative_int_value: int = cbproto.int64_field(5)
+    double_value: float = cbproto.double_field(6)
+    string_value: bytes = cbproto.bytes_field(7)
+    aggregate_value: str = cbproto.string_field(8)
 
     @dataclass(eq=False, repr=False)
-    class NamePart(betterproto.Message):
+    class NamePart(cbproto.Message):
         """
         The name of the uninterpreted option.  Each string represents a segment in
         a dot-separated name.  is_extension is true iff a segment represents an
@@ -1872,18 +1872,18 @@ class UninterpretedOption(betterproto.Message):
         "foo.(bar.baz).qux".
         """
 
-        name_part: str = betterproto.string_field(1)
-        is_extension: bool = betterproto.bool_field(2)
+        name_part: str = cbproto.string_field(1)
+        is_extension: bool = cbproto.bool_field(2)
 
 
 @dataclass(eq=False, repr=False)
-class SourceCodeInfo(betterproto.Message):
+class SourceCodeInfo(cbproto.Message):
     """
     Encapsulates information about the original source file from which a
     FileDescriptorProto was generated.
     """
 
-    location: List["SourceCodeInfo.Location"] = betterproto.message_field(1)
+    location: List["SourceCodeInfo.Location"] = cbproto.message_field(1)
     """
     A Location identifies a piece of source code in a .proto file which
     corresponds to a particular definition.  This information is intended
@@ -1931,8 +1931,8 @@ class SourceCodeInfo(betterproto.Message):
     """
 
     @dataclass(eq=False, repr=False)
-    class Location(betterproto.Message):
-        path: List[int] = betterproto.int32_field(1)
+    class Location(cbproto.Message):
+        path: List[int] = cbproto.int32_field(1)
         """
         Identifies which part of the FileDescriptorProto was defined at this
         location.
@@ -1959,7 +1959,7 @@ class SourceCodeInfo(betterproto.Message):
         of the label to the terminating semicolon).
         """
 
-        span: List[int] = betterproto.int32_field(2)
+        span: List[int] = cbproto.int32_field(2)
         """
         Always has exactly three or four elements: start line, start column,
         end line (optional, otherwise assumed same as start line), end column.
@@ -1968,7 +1968,7 @@ class SourceCodeInfo(betterproto.Message):
         1 to each before displaying to a user.
         """
 
-        leading_comments: str = betterproto.string_field(3)
+        leading_comments: str = cbproto.string_field(3)
         """
         If this SourceCodeInfo represents a complete declaration, these are any
         comments appearing before and after the declaration which appear to be
@@ -2019,42 +2019,42 @@ class SourceCodeInfo(betterproto.Message):
         // ignored detached comments.
         """
 
-        trailing_comments: str = betterproto.string_field(4)
-        leading_detached_comments: List[str] = betterproto.string_field(6)
+        trailing_comments: str = cbproto.string_field(4)
+        leading_detached_comments: List[str] = cbproto.string_field(6)
 
 
 @dataclass(eq=False, repr=False)
-class GeneratedCodeInfo(betterproto.Message):
+class GeneratedCodeInfo(cbproto.Message):
     """
     Describes the relationship between generated code and its original source
     file. A GeneratedCodeInfo message is associated with only one generated
     source file, but may contain references to different source .proto files.
     """
 
-    annotation: List["GeneratedCodeInfo.Annotation"] = betterproto.message_field(1)
+    annotation: List["GeneratedCodeInfo.Annotation"] = cbproto.message_field(1)
     """
     An Annotation connects some span of text in generated code to an element
     of its generating .proto file.
     """
 
     @dataclass(eq=False, repr=False)
-    class Annotation(betterproto.Message):
-        path: List[int] = betterproto.int32_field(1)
+    class Annotation(cbproto.Message):
+        path: List[int] = cbproto.int32_field(1)
         """
         Identifies the element in the original source .proto file. This field
         is formatted the same as SourceCodeInfo.Location.path.
         """
 
-        source_file: str = betterproto.string_field(2)
+        source_file: str = cbproto.string_field(2)
         """Identifies the filesystem path to the original source .proto."""
 
-        begin: int = betterproto.int32_field(3)
+        begin: int = cbproto.int32_field(3)
         """
         Identifies the starting offset in bytes in the generated code
         that relates to the identified object.
         """
 
-        end: int = betterproto.int32_field(4)
+        end: int = cbproto.int32_field(4)
         """
         Identifies the ending offset in bytes in the generated code that
         relates to the identified offset. The end offset should be one past
